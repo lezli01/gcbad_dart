@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:gcbad_dart/gcbad_dart.dart';
 import 'package:test/test.dart';
 
@@ -6,12 +8,14 @@ void main() {
     late GoCardlessBankAccountDataClient client;
 
     setUp(() {
-      client = GoCardlessBankAccountDataClient();
+      client = GoCardlessBankAccountDataClient(
+        secretId: Platform.environment["GCBAD_ID"]!,
+        secretKey: Platform.environment["GCBAD_KEY"]!
+      );
     });
 
     test('First Test', () async {
-      var value = await client.check();
-      expect(value, contains("google"));
+      print(await client.fetchToken());
     });
   });
 }
