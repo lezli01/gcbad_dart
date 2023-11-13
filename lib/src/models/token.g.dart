@@ -6,11 +6,26 @@ part of 'token.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-Token _$TokenFromJson(Map<String, dynamic> json) => Token(
-      accessToken: json['access'] as String,
-      accessExpiresSeconds: json['access_expires'] as int,
-      refreshToken: json['refresh'] as String,
-      refreshExpiresSeconds: json['refresh_expires'] as int,
+Token _$TokenFromJson(Map<String, dynamic> json) => $checkedCreate(
+      'Token',
+      json,
+      ($checkedConvert) {
+        final val = Token(
+          accessToken: $checkedConvert('access', (v) => v as String),
+          accessExpiresSeconds:
+              $checkedConvert('access_expires', (v) => v as int),
+          refreshToken: $checkedConvert('refresh', (v) => v as String),
+          refreshExpiresSeconds:
+              $checkedConvert('refresh_expires', (v) => v as int),
+        );
+        return val;
+      },
+      fieldKeyMap: const {
+        'accessToken': 'access',
+        'accessExpiresSeconds': 'access_expires',
+        'refreshToken': 'refresh',
+        'refreshExpiresSeconds': 'refresh_expires'
+      },
     );
 
 Map<String, dynamic> _$TokenToJson(Token instance) => <String, dynamic>{

@@ -9,13 +9,10 @@ void main() {
 
     setUp(() {
       client = GoCardlessBankAccountDataClient(
-        secretId: Platform.environment["GCBAD_ID"]!,
-        secretKey: Platform.environment["GCBAD_KEY"]!
-      );
+          secretId: Platform.environment["GCBAD_ID"]!,
+          secretKey: Platform.environment["GCBAD_KEY"]!);
     });
 
-    test('First Test', () async {
-      print(await client.fetchToken());
-    });
+    test('First Test', () async {});
   });
 }

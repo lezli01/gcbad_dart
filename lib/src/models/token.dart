@@ -14,6 +14,7 @@ class Token {
   final int refreshExpiresSeconds;
 
   get accessExpires => Duration(seconds: accessExpiresSeconds);
+
   get refreshExpires => Duration(seconds: refreshExpiresSeconds);
 
   Token(
