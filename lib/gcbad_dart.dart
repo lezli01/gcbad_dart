@@ -3,4 +3,4 @@
 /// More dartdocs go here.
 library;
 
-export 'src/gocardless_bankaccountdata_client.dart';
+export 'src/gocardless_bank_account_data_client.dart';

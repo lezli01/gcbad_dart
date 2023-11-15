@@ -1,20 +1,17 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'institution.dart';
+part of 'institution_metadata.dart';
 
 // **************************************************************************
 // JsonSerializableGenerator
 // **************************************************************************
 
-Institution _$InstitutionFromJson(Map<String, dynamic> json) => $checkedCreate(
-      'Institution',
+InstitutionMetadata _$InstitutionMetadataFromJson(Map<String, dynamic> json) =>
+    $checkedCreate(
+      'InstitutionMetadata',
       json,
       ($checkedConvert) {
-        final val = Institution(
-          supportedFeatures: $checkedConvert('supported_features',
-              (v) => (v as List<dynamic>).map((e) => e as String).toList()),
-          identificationCodes: $checkedConvert('identification_codes',
-              (v) => (v as List<dynamic>).map((e) => e as String).toList()),
+        final val = InstitutionMetadata(
           id: $checkedConvert('id', (v) => v as String),
           name: $checkedConvert('name', (v) => v as String),
           bic: $checkedConvert('bic', (v) => v as String?),
@@ -29,14 +26,10 @@ Institution _$InstitutionFromJson(Map<String, dynamic> json) => $checkedCreate(
         );
         return val;
       },
-      fieldKeyMap: const {
-        'supportedFeatures': 'supported_features',
-        'identificationCodes': 'identification_codes',
-        'transactionTotalDays': 'transaction_total_days'
-      },
+      fieldKeyMap: const {'transactionTotalDays': 'transaction_total_days'},
     );
 
-Map<String, dynamic> _$InstitutionToJson(Institution instance) {
+Map<String, dynamic> _$InstitutionMetadataToJson(InstitutionMetadata instance) {
   final val = <String, dynamic>{
     'id': instance.id,
     'name': instance.name,
@@ -53,8 +46,6 @@ Map<String, dynamic> _$InstitutionToJson(Institution instance) {
   val['countries'] =
       instance.countries.map((e) => _$CountryCodeEnumMap[e]!).toList();
   val['logo'] = instance.logo;
-  val['supported_features'] = instance.supportedFeatures;
-  val['identification_codes'] = instance.identificationCodes;
   return val;
 }
 

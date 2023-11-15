@@ -1,9 +1,9 @@
 import 'dart:convert';
 
-import 'package:gcbad_dart/src/communication_exception.dart';
+import 'package:gcbad_dart/src/gocardless_exception.dart';
 import 'package:gcbad_dart/src/models/error_response.dart';
 
-class HttpUtils {
+class GoCardlessHttpUtils {
   static T parse<T>(String body, T Function(Map<String, dynamic>) fromJson) {
     return _parse(body, (body) => fromJson(jsonDecode(body)));
   }
@@ -20,10 +20,10 @@ class HttpUtils {
     } catch (_) {
       try {
         throw ErrorResponse.fromJson(jsonDecode(body)).exception;
-      } on CommunicationException catch (_) {
+      } on GoCardlessException catch (_) {
         rethrow;
       } catch (_) {
-        throw CommunicationException(
+        throw GoCardlessException(
             message: 'Unknown error occurred during communication');
       }
     }

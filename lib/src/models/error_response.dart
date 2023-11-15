@@ -1,4 +1,4 @@
-import 'package:gcbad_dart/src/communication_exception.dart';
+import 'package:gcbad_dart/src/gocardless_exception.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'error_response.g.dart';
@@ -25,18 +25,18 @@ class ErrorResponse {
 
   get exception {
     if (summary != null && detail != null) {
-      return CommunicationException(message: '$summary: $detail ($statusCode)');
+      return GoCardlessException(message: '$summary: $detail ($statusCode)');
     }
 
     if (summary != null) {
-      return CommunicationException(message: '$summary ($statusCode)');
+      return GoCardlessException(message: '$summary ($statusCode)');
     }
 
     if (detail != null) {
-      return CommunicationException(message: '$detail ($statusCode)');
+      return GoCardlessException(message: '$detail ($statusCode)');
     }
 
-    return CommunicationException(
+    return GoCardlessException(
         message: 'Error during communication ($statusCode)');
   }
 

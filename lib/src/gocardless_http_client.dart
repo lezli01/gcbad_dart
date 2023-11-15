@@ -1,35 +1,54 @@
 import 'dart:async';
 import 'dart:convert';
 
-import 'package:gcbad_dart/src/httputils.dart';
+import 'package:gcbad_dart/src/gocardless_country_code.dart';
+import 'package:gcbad_dart/src/gocardless_http_utils.dart';
 import 'package:gcbad_dart/src/models/end_user_agreement.dart';
 import 'package:gcbad_dart/src/models/institution.dart';
+import 'package:gcbad_dart/src/models/institution_metadata.dart';
 import 'package:gcbad_dart/src/models/requisition.dart';
 import 'package:gcbad_dart/src/models/secretandkey.dart';
 import 'package:gcbad_dart/src/models/token.dart';
 
 import 'package:http/http.dart' as http;
 
-class HttpClient {
+class GoCardlessHttpClient {
   final SecretAndKey _secretAndKey;
 
   Token? _token;
   DateTime? _tokenRequestedAt;
 
-  HttpClient(this._secretAndKey);
+  GoCardlessHttpClient(this._secretAndKey);
 
-  Future<List<Institution>> institutions() async {
+  Future<List<InstitutionMetadata>> getInstitutionMetadatas(
+      GoCardlessCountryCode? country) async {
+    await _checkToken();
+
+    final queryParams = {'country': country?.code};
+
+    var uri = Uri.https(
+        'bankaccountdata.gocardless.com', '/api/v2/institutions/', queryParams);
+
+    final res = await http.get(uri, headers: {
+      'accept': 'application/json',
+      'Authorization': 'Bearer ${_token!.accessToken}'
+    });
+
+    return GoCardlessHttpUtils.parseList(res.body, InstitutionMetadata.fromJson);
+  }
+
+  Future<Institution> getInstitution(String id) async {
     await _checkToken();
 
     final res = await http.get(
         Uri.parse(
-            'https://bankaccountdata.gocardless.com/api/v2/institutions/'),
+            'https://bankaccountdata.gocardless.com/api/v2/institutions/$id'),
         headers: {
           'accept': 'application/json',
           'Authorization': 'Bearer ${_token!.accessToken}'
         });
 
-    return HttpUtils.parseList(res.body, Institution.fromJson);
+    return GoCardlessHttpUtils.parse(res.body, Institution.fromJson);
   }
 
   Future<EndUserAgreement> requestAgreement(dynamic body) async {
@@ -45,7 +64,7 @@ class HttpClient {
         },
         body: body);
 
-    return HttpUtils.parse(res.body, EndUserAgreement.fromJson);
+    return GoCardlessHttpUtils.parse(res.body, EndUserAgreement.fromJson);
   }
 
   Future<Requisition> requestRequisition(dynamic body) async {
@@ -61,7 +80,7 @@ class HttpClient {
         },
         body: body);
 
-    return HttpUtils.parse(res.body, Requisition.fromJson);
+    return GoCardlessHttpUtils.parse(res.body, Requisition.fromJson);
   }
 
   Future<Requisition> getRequisition(String id) async {
@@ -75,7 +94,7 @@ class HttpClient {
           'Authorization': 'Bearer ${_token!.accessToken}'
         });
 
-    return HttpUtils.parse(res.body, Requisition.fromJson);
+    return GoCardlessHttpUtils.parse(res.body, Requisition.fromJson);
   }
 
   Future _checkToken() async {
@@ -98,7 +117,7 @@ class HttpClient {
         },
         body: jsonEncode(_secretAndKey));
 
-    _token = HttpUtils.parse(res.body, Token.fromJson);
+    _token = GoCardlessHttpUtils.parse(res.body, Token.fromJson);
     _tokenRequestedAt = DateTime.now();
   }
 }
