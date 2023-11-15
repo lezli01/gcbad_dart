@@ -4,8 +4,8 @@ part 'requisition_request.g.dart';
 
 @JsonSerializable()
 class RequisitionRequest {
-  @JsonKey(name: 'redirect')
-  final String redirectUrl;
+  @JsonKey(name: 'redirect', includeIfNull: true)
+  final String? redirectUrl;
   @JsonKey(name: 'institution_id')
   final String institutionId;
   @JsonKey(name: 'agreement')
@@ -32,13 +32,14 @@ class RequisitionRequest {
       required this.redirectImmediate});
 
   RequisitionRequest.withDefaults(
-      {required this.redirectUrl, required this.institutionId})
-      : agreementId = null,
-        reference = null,
-        userLanguage = null,
-        ssn = null,
-        accountSelection = null,
-        redirectImmediate = null;
+      {required this.redirectUrl,
+        required this.institutionId,
+        this.agreementId,
+        this.reference,
+        this.userLanguage,
+        this.ssn,
+        this.accountSelection,
+        this.redirectImmediate});
 
   factory RequisitionRequest.fromJson(Map<String, dynamic> json) =>
       _$RequisitionRequestFromJson(json);

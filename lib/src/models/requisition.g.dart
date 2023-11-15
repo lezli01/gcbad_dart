@@ -14,7 +14,8 @@ Requisition _$RequisitionFromJson(Map<String, dynamic> json) => $checkedCreate(
           id: $checkedConvert('id', (v) => v as String),
           created: $checkedConvert('created', (v) => v as String?),
           redirect: $checkedConvert('redirect', (v) => v as String),
-          status: $checkedConvert('status', (v) => v as String?),
+          status: $checkedConvert('status',
+              (v) => $enumDecodeNullable(_$RequisitionStatusEnumMap, v)),
           institutionId: $checkedConvert('institution_id', (v) => v as String),
           agreement: $checkedConvert('agreement', (v) => v as String?),
           reference: $checkedConvert('reference', (v) => v as String?),
@@ -51,7 +52,7 @@ Map<String, dynamic> _$RequisitionToJson(Requisition instance) {
 
   writeNotNull('created', instance.created);
   val['redirect'] = instance.redirect;
-  writeNotNull('status', instance.status);
+  writeNotNull('status', _$RequisitionStatusEnumMap[instance.status]);
   val['institution_id'] = instance.institutionId;
   writeNotNull('agreement', instance.agreement);
   writeNotNull('reference', instance.reference);
@@ -63,3 +64,14 @@ Map<String, dynamic> _$RequisitionToJson(Requisition instance) {
   writeNotNull('redirect_immediate', instance.redirectImmediate);
   return val;
 }
+
+const _$RequisitionStatusEnumMap = {
+  RequisitionStatus.created: 'CR',
+  RequisitionStatus.givingConsent: 'GC',
+  RequisitionStatus.undergoingAuthentication: 'UA',
+  RequisitionStatus.rejected: 'RJ',
+  RequisitionStatus.selectingAccounts: 'SA',
+  RequisitionStatus.grantingAccess: 'GA',
+  RequisitionStatus.linked: 'LN',
+  RequisitionStatus.expired: 'EX',
+};

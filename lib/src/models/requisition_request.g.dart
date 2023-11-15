@@ -12,7 +12,7 @@ RequisitionRequest _$RequisitionRequestFromJson(Map<String, dynamic> json) =>
       json,
       ($checkedConvert) {
         final val = RequisitionRequest(
-          redirectUrl: $checkedConvert('redirect', (v) => v as String),
+          redirectUrl: $checkedConvert('redirect', (v) => v as String?),
           institutionId: $checkedConvert('institution_id', (v) => v as String),
           agreementId: $checkedConvert('agreement', (v) => v as String?),
           reference: $checkedConvert('reference', (v) => v as String?),

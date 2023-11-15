@@ -1,10 +1,10 @@
 import 'package:json_annotation/json_annotation.dart';
 
 enum InformationToAccess {
-  @JsonValue("balances")
+  @JsonValue('balances')
   balances,
-  @JsonValue("details")
+  @JsonValue('details')
   details,
-  @JsonValue("transactions")
+  @JsonValue('transactions')
   transactions
 }

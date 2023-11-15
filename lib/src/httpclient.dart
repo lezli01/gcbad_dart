@@ -14,11 +14,7 @@ class HttpClient {
   final SecretAndKey _secretAndKey;
 
   Token? _token;
-
-  static final Finalizer<Timer?> _finalizer =
-      Finalizer((timer) => timer?.cancel());
-
-  Timer? _tokenRefreshTimer;
+  DateTime? _tokenRequestedAt;
 
   HttpClient(this._secretAndKey);
 
@@ -27,7 +23,7 @@ class HttpClient {
 
     final res = await http.get(
         Uri.parse(
-            "https://bankaccountdata.gocardless.com/api/v2/institutions/"),
+            'https://bankaccountdata.gocardless.com/api/v2/institutions/'),
         headers: {
           'accept': 'application/json',
           'Authorization': 'Bearer ${_token!.accessToken}'
@@ -41,7 +37,7 @@ class HttpClient {
 
     final res = await http.post(
         Uri.parse(
-            "https://bankaccountdata.gocardless.com/api/v2/agreements/enduser/"),
+            'https://bankaccountdata.gocardless.com/api/v2/agreements/enduser/'),
         headers: {
           'accept': 'application/json',
           'Content-Type': 'application/json',
@@ -57,7 +53,7 @@ class HttpClient {
 
     final res = await http.post(
         Uri.parse(
-            "https://bankaccountdata.gocardless.com/api/v2/requisitions/"),
+            'https://bankaccountdata.gocardless.com/api/v2/requisitions/'),
         headers: {
           'accept': 'application/json',
           'Content-Type': 'application/json',
@@ -68,15 +64,34 @@ class HttpClient {
     return HttpUtils.parse(res.body, Requisition.fromJson);
   }
 
+  Future<Requisition> getRequisition(String id) async {
+    await _checkToken();
+
+    final res = await http.get(
+        Uri.parse(
+            'https://bankaccountdata.gocardless.com/api/v2/requisitions/$id'),
+        headers: {
+          'accept': 'application/json',
+          'Authorization': 'Bearer ${_token!.accessToken}'
+        });
+
+    return HttpUtils.parse(res.body, Requisition.fromJson);
+  }
+
   Future _checkToken() async {
     if (_token == null) {
-      await _initializeToken();
+      await _requestNewToken();
+    }
+
+    if (DateTime.now().difference(_tokenRequestedAt!).inSeconds + 30 >
+        _token!.accessExpiresSeconds) {
+      await _requestNewToken();
     }
   }
 
-  Future _initializeToken() async {
+  Future _requestNewToken() async {
     final res = await http.post(
-        Uri.parse("https://bankaccountdata.gocardless.com/api/v2/token/new/"),
+        Uri.parse('https://bankaccountdata.gocardless.com/api/v2/token/new/'),
         headers: {
           'accept': 'application/json',
           'Content-Type': 'application/json'
@@ -84,14 +99,6 @@ class HttpClient {
         body: jsonEncode(_secretAndKey));
 
     _token = HttpUtils.parse(res.body, Token.fromJson);
-
-    if (_tokenRefreshTimer != null) {
-      _tokenRefreshTimer!.cancel();
-      _finalizer.detach(this);
-    }
-
-    _tokenRefreshTimer = Timer(
-        Duration(seconds: _token!.accessExpiresSeconds), _initializeToken);
-    _finalizer.attach(this, _tokenRefreshTimer, detach: this);
+    _tokenRequestedAt = DateTime.now();
   }
 }

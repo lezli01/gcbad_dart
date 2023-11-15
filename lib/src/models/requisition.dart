@@ -2,6 +2,25 @@ import 'package:json_annotation/json_annotation.dart';
 
 part 'requisition.g.dart';
 
+enum RequisitionStatus {
+  @JsonValue('CR')
+  created,
+  @JsonValue('GC')
+  givingConsent,
+  @JsonValue('UA')
+  undergoingAuthentication,
+  @JsonValue('RJ')
+  rejected,
+  @JsonValue('SA')
+  selectingAccounts,
+  @JsonValue('GA')
+  grantingAccess,
+  @JsonValue('LN')
+  linked,
+  @JsonValue('EX')
+  expired
+}
+
 @JsonSerializable()
 class Requisition {
   @JsonKey(name: 'id')
@@ -11,7 +30,7 @@ class Requisition {
   @JsonKey(name: 'redirect')
   final String redirect;
   @JsonKey(name: 'status')
-  final String? status;
+  final RequisitionStatus? status;
   @JsonKey(name: 'institution_id')
   final String institutionId;
   @JsonKey(name: 'agreement')
