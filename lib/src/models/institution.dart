@@ -1,9 +1,9 @@
 import 'package:json_annotation/json_annotation.dart';
 
-part 'integration.g.dart';
+part 'institution.g.dart';
 
 @JsonSerializable()
-class Integration {
+class Institution {
   @JsonKey(name: 'id')
   final String id;
   @JsonKey(name: 'name')
@@ -17,7 +17,7 @@ class Integration {
   @JsonKey(name: 'logo')
   final String logo;
 
-  Integration(
+  Institution(
       {required this.id,
       required this.name,
       required this.bic,
@@ -25,8 +25,8 @@ class Integration {
       required this.countries,
       required this.logo});
 
-  factory Integration.fromJson(Map<String, dynamic> json) =>
-      _$IntegrationFromJson(json);
+  factory Institution.fromJson(Map<String, dynamic> json) =>
+      _$InstitutionFromJson(json);
 
-  Map<String, dynamic> toJson() => _$IntegrationToJson(this);
+  Map<String, dynamic> toJson() => _$InstitutionToJson(this);
 }

@@ -1,4 +1,4 @@
-import 'package:gcbad_dart/src/gcbad_exception.dart';
+import 'package:gcbad_dart/src/communication_exception.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'error_response.g.dart';
@@ -25,18 +25,19 @@ class ErrorResponse {
 
   get exception {
     if (summary != null && detail != null) {
-      return GCBADException(message: '$summary: $detail ($statusCode)');
+      return CommunicationException(message: '$summary: $detail ($statusCode)');
     }
 
     if (summary != null) {
-      return GCBADException(message: '$summary ($statusCode)');
+      return CommunicationException(message: '$summary ($statusCode)');
     }
 
     if (detail != null) {
-      return GCBADException(message: '$detail ($statusCode)');
+      return CommunicationException(message: '$detail ($statusCode)');
     }
 
-    return GCBADException(message: 'Error during communication ($statusCode)');
+    return CommunicationException(
+        message: 'Error during communication ($statusCode)');
   }
 
   factory ErrorResponse.fromJson(Map<String, dynamic> json) =>

@@ -2,7 +2,9 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:gcbad_dart/src/httputils.dart';
-import 'package:gcbad_dart/src/models/integration.dart';
+import 'package:gcbad_dart/src/models/end_user_agreement.dart';
+import 'package:gcbad_dart/src/models/institution.dart';
+import 'package:gcbad_dart/src/models/requisition.dart';
 import 'package:gcbad_dart/src/models/secretandkey.dart';
 import 'package:gcbad_dart/src/models/token.dart';
 
@@ -20,17 +22,50 @@ class HttpClient {
 
   HttpClient(this._secretAndKey);
 
-  Future<List<Integration>> institutions() async {
+  Future<List<Institution>> institutions() async {
     await _checkToken();
 
     final res = await http.get(
-        Uri.parse("https://bankaccountdata.gocardless.com/api/v2/institutions"),
+        Uri.parse(
+            "https://bankaccountdata.gocardless.com/api/v2/institutions/"),
         headers: {
           'accept': 'application/json',
           'Authorization': 'Bearer ${_token!.accessToken}'
         });
 
-    return HttpUtils.parseList(res.body, Integration.fromJson);
+    return HttpUtils.parseList(res.body, Institution.fromJson);
+  }
+
+  Future<EndUserAgreement> requestAgreement(dynamic body) async {
+    await _checkToken();
+
+    final res = await http.post(
+        Uri.parse(
+            "https://bankaccountdata.gocardless.com/api/v2/agreements/enduser/"),
+        headers: {
+          'accept': 'application/json',
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ${_token!.accessToken}'
+        },
+        body: body);
+
+    return HttpUtils.parse(res.body, EndUserAgreement.fromJson);
+  }
+
+  Future<Requisition> requestRequisition(dynamic body) async {
+    await _checkToken();
+
+    final res = await http.post(
+        Uri.parse(
+            "https://bankaccountdata.gocardless.com/api/v2/requisitions/"),
+        headers: {
+          'accept': 'application/json',
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ${_token!.accessToken}'
+        },
+        body: body);
+
+    return HttpUtils.parse(res.body, Requisition.fromJson);
   }
 
   Future _checkToken() async {

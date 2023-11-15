@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:gcbad_dart/src/gcbad_exception.dart';
+import 'package:gcbad_dart/src/communication_exception.dart';
 import 'package:gcbad_dart/src/models/error_response.dart';
 
 class HttpUtils {
@@ -20,10 +20,10 @@ class HttpUtils {
     } catch (_) {
       try {
         throw ErrorResponse.fromJson(jsonDecode(body)).exception;
-      } on GCBADException catch (_) {
+      } on CommunicationException catch (_) {
         rethrow;
       } catch (_) {
-        throw GCBADException(
+        throw CommunicationException(
             message: 'Unknown error occurred during communication');
       }
     }

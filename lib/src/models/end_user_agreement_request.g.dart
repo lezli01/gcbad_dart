@@ -13,7 +13,7 @@ EndUserAgreementRequest _$EndUserAgreementRequestFromJson(
       json,
       ($checkedConvert) {
         final val = EndUserAgreementRequest(
-          insitutionId: $checkedConvert('institution_id', (v) => v as String),
+          institutionId: $checkedConvert('institution_id', (v) => v as String),
           maxHistoricalDays:
               $checkedConvert('max_historical_days', (v) => v as int?),
           accessValidForDays:
@@ -27,7 +27,7 @@ EndUserAgreementRequest _$EndUserAgreementRequestFromJson(
         return val;
       },
       fieldKeyMap: const {
-        'insitutionId': 'institution_id',
+        'institutionId': 'institution_id',
         'maxHistoricalDays': 'max_historical_days',
         'accessValidForDays': 'access_valid_for_days',
         'accessScope': 'access_scope'
@@ -37,7 +37,7 @@ EndUserAgreementRequest _$EndUserAgreementRequestFromJson(
 Map<String, dynamic> _$EndUserAgreementRequestToJson(
     EndUserAgreementRequest instance) {
   final val = <String, dynamic>{
-    'institution_id': instance.insitutionId,
+    'institution_id': instance.institutionId,
   };
 
   void writeNotNull(String key, dynamic value) {

@@ -1,16 +1,16 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'integration.dart';
+part of 'institution.dart';
 
 // **************************************************************************
 // JsonSerializableGenerator
 // **************************************************************************
 
-Integration _$IntegrationFromJson(Map<String, dynamic> json) => $checkedCreate(
-      'Integration',
+Institution _$InstitutionFromJson(Map<String, dynamic> json) => $checkedCreate(
+      'Institution',
       json,
       ($checkedConvert) {
-        final val = Integration(
+        final val = Institution(
           id: $checkedConvert('id', (v) => v as String),
           name: $checkedConvert('name', (v) => v as String),
           bic: $checkedConvert('bic', (v) => v as String?),
@@ -25,7 +25,7 @@ Integration _$IntegrationFromJson(Map<String, dynamic> json) => $checkedCreate(
       fieldKeyMap: const {'transactionTotalDays': 'transaction_total_days'},
     );
 
-Map<String, dynamic> _$IntegrationToJson(Integration instance) {
+Map<String, dynamic> _$InstitutionToJson(Institution instance) {
   final val = <String, dynamic>{
     'id': instance.id,
     'name': instance.name,

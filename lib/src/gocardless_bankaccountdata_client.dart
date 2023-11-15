@@ -1,5 +1,11 @@
+import 'dart:convert';
+
 import 'package:gcbad_dart/src/httpclient.dart';
-import 'package:gcbad_dart/src/models/integration.dart';
+import 'package:gcbad_dart/src/models/end_user_agreement.dart';
+import 'package:gcbad_dart/src/models/end_user_agreement_request.dart';
+import 'package:gcbad_dart/src/models/institution.dart';
+import 'package:gcbad_dart/src/models/requisition.dart';
+import 'package:gcbad_dart/src/models/requisition_request.dart';
 import 'package:gcbad_dart/src/models/secretandkey.dart';
 
 class GoCardlessBankAccountDataClient {
@@ -10,7 +16,20 @@ class GoCardlessBankAccountDataClient {
       : webClient =
             HttpClient(SecretAndKey(secretId: secretId, secretKey: secretKey));
 
-  Future<List<Integration>> institutions() async {
+  Future<List<Institution>> institutions() async {
     return webClient.institutions();
+  }
+
+  Future<EndUserAgreement> createAgreement(String institutionId) async {
+    var request =
+        EndUserAgreementRequest.withDefaults(institutionId: institutionId);
+    return webClient.requestAgreement(jsonEncode(request));
+  }
+
+  Future<Requisition> createRequisition(EndUserAgreement agreement) async {
+    var request = RequisitionRequest.withDefaults(
+        redirectUrl: 'http://www.kaka.com',
+        institutionId: agreement.institutionId);
+    return webClient.requestRequisition(jsonEncode(request));
   }
 }
