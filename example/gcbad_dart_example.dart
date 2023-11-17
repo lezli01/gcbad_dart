@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:gcbad_dart/gcbad_dart.dart';
@@ -10,10 +11,25 @@ void printNumPerCountry(GoCardlessBankAccountDataClient client) async {
   }
 }
 
+void printAccountDetails(GoCardlessBankAccountDataClient client) async {
+  var institution = await client.getSandboxInstitution();
+  var agreement = await client.createAgreement(institution);
+  var requisition = await client.createRequisition(agreement);
+
+  print(requisition.link);
+  requisition = await client.waitForRequisitionLink(requisition);
+  var accounts = await client.getAccounts(requisition);
+
+  for (var account in accounts) {
+    print(account.ownerName);
+  }
+}
+
 void main() async {
   var client = GoCardlessBankAccountDataClient(
       secretId: Platform.environment['GCBAD_ID']!,
       secretKey: Platform.environment['GCBAD_KEY']!);
 
-  printNumPerCountry(client);
+  //printNumPerCountry(client);
+  printAccountDetails(client);
 }

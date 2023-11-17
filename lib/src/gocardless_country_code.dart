@@ -2,6 +2,7 @@ import 'package:json_annotation/json_annotation.dart';
 
 @JsonEnum(valueField: 'code')
 enum GoCardlessCountryCode {
+  invalid('XX'),
   austria('AT'),
   belgium('BE'),
   bulgaria('BG'),

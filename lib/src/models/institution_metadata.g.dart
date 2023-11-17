@@ -20,7 +20,7 @@ InstitutionMetadata _$InstitutionMetadataFromJson(Map<String, dynamic> json) =>
           countries: $checkedConvert(
               'countries',
               (v) => (v as List<dynamic>)
-                  .map((e) => $enumDecode(_$CountryCodeEnumMap, e))
+                  .map((e) => $enumDecode(_$GoCardlessCountryCodeEnumMap, e))
                   .toList()),
           logo: $checkedConvert('logo', (v) => v as String),
         );
@@ -43,13 +43,15 @@ Map<String, dynamic> _$InstitutionMetadataToJson(InstitutionMetadata instance) {
 
   writeNotNull('bic', instance.bic);
   writeNotNull('transaction_total_days', instance.transactionTotalDays);
-  val['countries'] =
-      instance.countries.map((e) => _$CountryCodeEnumMap[e]!).toList();
+  val['countries'] = instance.countries
+      .map((e) => _$GoCardlessCountryCodeEnumMap[e]!)
+      .toList();
   val['logo'] = instance.logo;
   return val;
 }
 
-const _$CountryCodeEnumMap = {
+const _$GoCardlessCountryCodeEnumMap = {
+  GoCardlessCountryCode.invalid: 'XX',
   GoCardlessCountryCode.austria: 'AT',
   GoCardlessCountryCode.belgium: 'BE',
   GoCardlessCountryCode.bulgaria: 'BG',

@@ -1,7 +1,9 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:gcbad_dart/src/gocardless_country_code.dart';
 import 'package:gcbad_dart/src/gocardless_http_client.dart';
+import 'package:gcbad_dart/src/models/account.dart';
 import 'package:gcbad_dart/src/models/end_user_agreement.dart';
 import 'package:gcbad_dart/src/models/end_user_agreement_request.dart';
 import 'package:gcbad_dart/src/models/institution.dart';
@@ -37,17 +39,25 @@ class GoCardlessBankAccountDataClient {
     return getInstitutionById(sandboxInstitutionId);
   }
 
-  Future<EndUserAgreement> createAgreement(String institutionId) async {
+  Future<EndUserAgreement> createAgreementById(String institutionId) async {
     var request =
         EndUserAgreementRequest.withDefaults(institutionId: institutionId);
 
     return webClient.requestAgreement(jsonEncode(request));
   }
 
-  Future<Requisition> createRequisition(
-      String redirectUrl, EndUserAgreement agreement) async {
+  Future<EndUserAgreement> createAgreement(
+      InstitutionMetadata institutionMetadata) async {
+    var request = EndUserAgreementRequest.withDefaults(
+        institutionId: institutionMetadata.id);
+
+    return webClient.requestAgreement(jsonEncode(request));
+  }
+
+  Future<Requisition> createRequisition(EndUserAgreement agreement,
+      {String? redirectUrl}) async {
     var request = RequisitionRequest.withDefaults(
-        redirectUrl: redirectUrl,
+        redirectUrl: redirectUrl ?? "https://www.gocardless.com",
         institutionId: agreement.institutionId,
         agreementId: agreement.id);
 
@@ -56,5 +66,38 @@ class GoCardlessBankAccountDataClient {
 
   Future<Requisition> getRequisition(String id) async {
     return webClient.getRequisition(id);
+  }
+
+  Future<Requisition> waitForRequisitionLinkById(String id) async {
+    var requisition = await getRequisition(id);
+
+    while (requisition.status != RequisitionStatus.linked) {
+      sleep(Duration(milliseconds: 100));
+      requisition = await getRequisition(id);
+    }
+
+    return requisition;
+  }
+
+  Future<Requisition> waitForRequisitionLink(Requisition requisition) async {
+    return waitForRequisitionLinkById(requisition.id);
+  }
+
+  Future<Account> getAccountById(String id) async {
+    return webClient.getAccount(id);
+  }
+
+  Future<List<Account>> getAccounts(Requisition requisition) async {
+    var accounts = <Account>[];
+
+    if (requisition.accounts == null) {
+      return accounts;
+    }
+
+    for (var accountId in requisition.accounts!) {
+      accounts.add(await getAccountById(accountId));
+    }
+
+    return accounts;
   }
 }
