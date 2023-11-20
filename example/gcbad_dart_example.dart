@@ -22,6 +22,8 @@ void printAccountDetails(GoCardlessBankAccountDataClient client) async {
 
   for (var account in accounts) {
     print(account.ownerName);
+    print(JsonEncoder.withIndent('  ')
+        .convert(await client.getBalances(account)));
   }
 }
 

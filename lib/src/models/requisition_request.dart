@@ -33,13 +33,13 @@ class RequisitionRequest {
 
   RequisitionRequest.withDefaults(
       {required this.redirectUrl,
-        required this.institutionId,
-        this.agreementId,
-        this.reference,
-        this.userLanguage,
-        this.ssn,
-        this.accountSelection,
-        this.redirectImmediate});
+      required this.institutionId,
+      this.agreementId,
+      this.reference,
+      this.userLanguage,
+      this.ssn,
+      this.accountSelection,
+      this.redirectImmediate});
 
   factory RequisitionRequest.fromJson(Map<String, dynamic> json) =>
       _$RequisitionRequestFromJson(json);
