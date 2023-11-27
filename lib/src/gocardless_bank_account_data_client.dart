@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:gcbad_dart/src/gocardless_country_code.dart';
 import 'package:gcbad_dart/src/gocardless_http_client.dart';
 import 'package:gcbad_dart/src/models/account.dart';
+import 'package:gcbad_dart/src/models/account_details.dart';
 import 'package:gcbad_dart/src/models/balances.dart';
 import 'package:gcbad_dart/src/models/end_user_agreement.dart';
 import 'package:gcbad_dart/src/models/end_user_agreement_request.dart';
@@ -112,5 +113,13 @@ class GoCardlessBankAccountDataClient {
 
   Future<Balances> getBalancesById(String accountId) async {
     return webClient.getBalances(accountId);
+  }
+
+  Future<AccountDetails> getAccountDetails(Account account) {
+    return getAccountDetailsById(account.id);
+  }
+
+  Future<AccountDetails> getAccountDetailsById(String accountId) {
+    return webClient.getAccountDetails(accountId);
   }
 }

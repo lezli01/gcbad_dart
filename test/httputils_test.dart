@@ -1,6 +1,5 @@
 import 'dart:convert';
 
-import 'package:gcbad_dart/src/models/error_response.dart';
 import 'package:test/test.dart';
 
 void main() {

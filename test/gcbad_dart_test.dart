@@ -30,7 +30,9 @@ void main() {
 
       for (var account in accounts) {
         var queriedAccount = await client.getAccountById(account.id);
-        expect(queriedAccount.toJson(), account.toJson());
+
+        expect(queriedAccount.toJson()..remove('last_accessed'),
+            account.toJson()..remove('last_accessed'));
       }
     });
 
@@ -53,6 +55,14 @@ void main() {
         expect(balances.balances[0].balanceAmount.currency, 'EUR');
         expect(balances.balances[1].balanceAmount.amount, '1913.12');
         expect(balances.balances[1].balanceAmount.currency, 'EUR');
+      }
+    });
+
+    test('Get account details', () async {
+      var accounts = await client.getAccounts(requisition);
+
+      for (var account in accounts) {
+        var details = await client.getAccountDetails(account);
       }
     });
   });

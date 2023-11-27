@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'package:gcbad_dart/src/gocardless_country_code.dart';
 import 'package:gcbad_dart/src/gocardless_http_utils.dart';
 import 'package:gcbad_dart/src/models/account.dart';
+import 'package:gcbad_dart/src/models/account_details.dart';
 import 'package:gcbad_dart/src/models/balances.dart';
 import 'package:gcbad_dart/src/models/end_user_agreement.dart';
 import 'package:gcbad_dart/src/models/institution.dart';
@@ -86,12 +87,12 @@ class GoCardlessHttpClient {
     return GoCardlessHttpUtils.parse(res.body, Requisition.fromJson);
   }
 
-  Future<Requisition> getRequisition(String id) async {
+  Future<Requisition> getRequisition(String requisitionId) async {
     await _checkToken();
 
     final res = await http.get(
         Uri.parse(
-            'https://bankaccountdata.gocardless.com/api/v2/requisitions/$id'),
+            'https://bankaccountdata.gocardless.com/api/v2/requisitions/$requisitionId'),
         headers: {
           'accept': 'application/json',
           'Authorization': 'Bearer ${_token!.accessToken}'
@@ -100,11 +101,12 @@ class GoCardlessHttpClient {
     return GoCardlessHttpUtils.parse(res.body, Requisition.fromJson);
   }
 
-  Future<Account> getAccount(String id) async {
+  Future<Account> getAccount(String accountId) async {
     await _checkToken();
 
     final res = await http.get(
-        Uri.parse('https://bankaccountdata.gocardless.com/api/v2/accounts/$id'),
+        Uri.parse(
+            'https://bankaccountdata.gocardless.com/api/v2/accounts/$accountId'),
         headers: {
           'accept': 'application/json',
           'Authorization': 'Bearer ${_token!.accessToken}'
@@ -113,18 +115,32 @@ class GoCardlessHttpClient {
     return GoCardlessHttpUtils.parse(res.body, Account.fromJson);
   }
 
-  Future<Balances> getBalances(String id) async {
+  Future<Balances> getBalances(String accountId) async {
     await _checkToken();
 
     final res = await http.get(
         Uri.parse(
-            'https://bankaccountdata.gocardless.com/api/v2/accounts/$id/balances/'),
+            'https://bankaccountdata.gocardless.com/api/v2/accounts/$accountId/balances/'),
         headers: {
           'accept': 'application/json',
           'Authorization': 'Bearer ${_token!.accessToken}'
         });
 
     return GoCardlessHttpUtils.parse(res.body, Balances.fromJson);
+  }
+
+  Future<AccountDetails> getAccountDetails(String accountId) async {
+    await _checkToken();
+
+    final res = await http.get(
+        Uri.parse(
+            'https://bankaccountdata.gocardless.com/api/v2/accounts/$accountId/details/'),
+        headers: {
+          'accept': 'application/json',
+          'Authorization': 'Bearer ${_token!.accessToken}'
+        });
+
+    return GoCardlessHttpUtils.parse(res.body, AccountDetails.fromJson);
   }
 
   Future _checkToken() async {
