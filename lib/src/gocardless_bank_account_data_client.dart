@@ -32,8 +32,8 @@ class GoCardlessBankAccountDataClient {
     return webClient.getInstitution(institutionMetadata.id);
   }
 
-  Future<Institution> getInstitutionById(String id) {
-    return webClient.getInstitution(id);
+  Future<Institution> getInstitutionById(String institutionId) {
+    return webClient.getInstitution(institutionId);
   }
 
   Future<Institution> getSandboxInstitution() {
@@ -69,12 +69,12 @@ class GoCardlessBankAccountDataClient {
     return webClient.getRequisition(id);
   }
 
-  Future<Requisition> waitForRequisitionLinkById(String id) async {
-    var requisition = await getRequisition(id);
+  Future<Requisition> waitForRequisitionLinkById(String requisitionId) async {
+    var requisition = await getRequisition(requisitionId);
 
     while (requisition.status != RequisitionStatus.linked) {
       sleep(Duration(milliseconds: 100));
-      requisition = await getRequisition(id);
+      requisition = await getRequisition(requisitionId);
     }
 
     return requisition;
@@ -102,11 +102,15 @@ class GoCardlessBankAccountDataClient {
     return accounts;
   }
 
+  Future<List<Account>> getAccountsById(String requisitionId) async {
+    return await getAccounts(await getRequisition(requisitionId));
+  }
+
   Future<Balances> getBalances(Account account) async {
     return getBalancesById(account.id);
   }
 
-  Future<Balances> getBalancesById(String id) async {
-    return webClient.getBalances(id);
+  Future<Balances> getBalancesById(String accountId) async {
+    return webClient.getBalances(accountId);
   }
 }
