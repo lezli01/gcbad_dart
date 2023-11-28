@@ -13,6 +13,8 @@ import 'package:gcbad_dart/src/models/institution_metadata.dart';
 import 'package:gcbad_dart/src/models/requisition.dart';
 import 'package:gcbad_dart/src/models/requisition_request.dart';
 import 'package:gcbad_dart/src/models/secretandkey.dart';
+import 'package:gcbad_dart/src/models/transactions.dart';
+import 'package:intl/intl.dart';
 
 class GoCardlessBankAccountDataClient {
   static const String sandboxInstitutionId = 'SANDBOXFINANCE_SFIN0000';
@@ -121,5 +123,24 @@ class GoCardlessBankAccountDataClient {
 
   Future<AccountDetails> getAccountDetailsById(String accountId) {
     return webClient.getAccountDetails(accountId);
+  }
+
+  Future<Transactions> getTransactions(Account account,
+      {DateTime? dateFrom, DateTime? dateTo}) {
+    return getTransactionsById(account.id, dateFrom: dateFrom, dateTo: dateTo);
+  }
+
+  Future<Transactions> getTransactionsById(String accountId,
+      {DateTime? dateFrom, DateTime? dateTo}) {
+    return webClient.getTransactions(
+        accountId, dateToStringFormat(dateFrom), dateToStringFormat(dateTo));
+  }
+
+  String? dateToStringFormat(DateTime? dateTime) {
+    if (dateTime == null) {
+      return null;
+    }
+
+    return DateFormat('yyyy-MM-dd').format(dateTime);
   }
 }

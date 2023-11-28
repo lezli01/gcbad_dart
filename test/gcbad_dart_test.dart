@@ -1,3 +1,5 @@
+@Timeout(Duration(minutes: 1))
+
 import 'dart:convert';
 
 import 'package:gcbad_dart/gcbad_dart.dart';
@@ -74,6 +76,14 @@ void main() {
       expect(details.account.name, 'Main Account');
       expect(details.account.product, 'Checkings');
       expect(details.account.cashAccountType, 'CACC');
+    });
+
+    test('Get transactions', () async {
+      var accounts = await client.getAccounts(requisition);
+      expect(accounts.length, 2);
+
+      var transactions = await client.getTransactions(accounts[0], dateFrom: DateTime(2023, 11, 30), dateTo: DateTime(2023, 11, 26));
+      print(JsonEncoder.withIndent('  ').convert(transactions));
     });
   });
 }

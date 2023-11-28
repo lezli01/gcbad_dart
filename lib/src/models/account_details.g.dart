@@ -19,7 +19,6 @@ AccountDetails _$AccountDetailsFromJson(Map<String, dynamic> json) =>
         );
         return val;
       },
-      fieldKeyMap: const {'details': 'account'},
     );
 
 Map<String, dynamic> _$AccountDetailsToJson(AccountDetails instance) =>
