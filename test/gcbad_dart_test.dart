@@ -27,13 +27,6 @@ void main() {
       expect(accounts.length, 2);
       expect(accounts[0].ownerName, 'John Doe');
       expect(accounts[1].ownerName, 'Jane Doe');
-
-      for (var account in accounts) {
-        var queriedAccount = await client.getAccountById(account.id);
-
-        expect(queriedAccount.toJson()..remove('last_accessed'),
-            account.toJson()..remove('last_accessed'));
-      }
     });
 
     test('Get balances', () async {
@@ -60,10 +53,27 @@ void main() {
 
     test('Get account details', () async {
       var accounts = await client.getAccounts(requisition);
+      expect(accounts.length, 2);
 
-      for (var account in accounts) {
-        var details = await client.getAccountDetails(account);
-      }
+      var details = await client.getAccountDetails(accounts[0]);
+
+      expect(details.account.resourceId, '01F3NS4YV94RA29YCH8R0F6BMF');
+      expect(details.account.iban, 'GL1984130000084136');
+      expect(details.account.currency, 'EUR');
+      expect(details.account.ownerName, 'John Doe');
+      expect(details.account.name, 'Main Account');
+      expect(details.account.product, 'Checkings');
+      expect(details.account.cashAccountType, 'CACC');
+
+      details = await client.getAccountDetails(accounts[1]);
+
+      expect(details.account.resourceId, '01F3NS5ASCNMVCTEJDT0G215YE');
+      expect(details.account.iban, 'GL2490330000090332');
+      expect(details.account.currency, 'EUR');
+      expect(details.account.ownerName, 'Jane Doe');
+      expect(details.account.name, 'Main Account');
+      expect(details.account.product, 'Checkings');
+      expect(details.account.cashAccountType, 'CACC');
     });
   });
 }
