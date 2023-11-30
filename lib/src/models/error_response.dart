@@ -26,14 +26,42 @@ class ErrorResponse {
   static GoCardlessException createException(dynamic json) {
     var message = 'Unknown error occurred during communication.';
 
-    final error = json as Map<String, dynamic>;
+    String? summaryText;
+    String? detailText;
+    int? statusCodeValue;
 
-    final summary = error['summary'] as List<dynamic>;
-    final detail = error['detail'] as List<dynamic>;
-    final statusCode = error['status_code'] as int;
+    if (json is Map<String, dynamic>) {
+      final summary = json['summary'];
+      final detail = json['detail'];
+      final statusCode = json['status_code'];
 
-    if (summary.isNotEmpty && detail.isNotEmpty) {
-      message = '${summary[0]}: ${detail[0]} ($statusCode)';
+      if (summary is List<dynamic> &&
+          summary.isNotEmpty &&
+          summary[0] is String) {
+        summaryText = summary[0];
+      }
+
+      if (detail is List<dynamic> && detail.isNotEmpty && detail[0] is String) {
+        detailText = detail[0];
+      }
+
+      if (statusCode is int) {
+        statusCodeValue = statusCode;
+      }
+    }
+
+    if (summaryText != null) {
+      message = summaryText;
+
+      if (detailText != null) {
+        message = '$message: $detailText';
+      }
+    } else if (detailText != null) {
+      message = detailText;
+    }
+
+    if (statusCodeValue != null) {
+      message = '$message ($statusCodeValue)';
     }
 
     return GoCardlessException(message: message);

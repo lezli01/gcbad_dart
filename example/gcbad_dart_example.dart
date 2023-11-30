@@ -4,14 +4,15 @@ import 'dart:io';
 import 'package:gcbad_dart/gcbad_dart.dart';
 import 'package:gcbad_dart/src/gocardless_country_code.dart';
 
-void printNumPerCountry(GoCardlessBankAccountDataClient client) async {
-  for (var country in GoCardlessCountryCode.values) {
+Future printNumPerCountry(GoCardlessBankAccountDataClient client) async {
+  for (var country in GoCardlessCountryCode.values
+      .where((element) => element != GoCardlessCountryCode.invalid)) {
     var institutions = await client.getInstitutionMetadatas(country: country);
     print('${country.code}: ${institutions.length}');
   }
 }
 
-void printAccountDetails(GoCardlessBankAccountDataClient client) async {
+Future printAccountDetails(GoCardlessBankAccountDataClient client) async {
   var institution = await client.getSandboxInstitution();
   var agreement = await client.createAgreement(institution);
   var requisition = await client.createRequisition(agreement);
@@ -32,6 +33,6 @@ void main() async {
       secretId: Platform.environment['GCBAD_ID']!,
       secretKey: Platform.environment['GCBAD_KEY']!);
 
-  //printNumPerCountry(client);
-  printAccountDetails(client);
+  await printNumPerCountry(client);
+  await printAccountDetails(client);
 }
