@@ -35,7 +35,8 @@ class SandboxClient {
     var agreement = await client.createAgreement(institution);
     requisition = await client.createRequisition(agreement);
 
-    var browser = await puppeteer.launch(headless: true, timeout: Duration(minutes: 1));
+    var browser =
+        await puppeteer.launch(headless: true, timeout: Duration(minutes: 1));
     var page = await browser.newPage();
     page.defaultTimeout = Duration.zero;
 

@@ -73,23 +73,23 @@ class AccountDetailsInternal {
 
   AccountDetailsInternal(
       {required this.resourceId,
-        required this.iban,
-        required this.bban,
-        required this.msisdn,
-        required this.currency,
-        required this.ownerName,
-        required this.name,
-        required this.displayName,
-        required this.product,
-        required this.cashAccountType,
-        required this.status,
-        required this.bic,
-        required this.linkedAccounts,
-        required this.maskedPan,
-        required this.usage,
-        required this.details,
-        required this.ownerAddressUnstructured,
-        required this.ownerAddressStructured});
+      required this.iban,
+      required this.bban,
+      required this.msisdn,
+      required this.currency,
+      required this.ownerName,
+      required this.name,
+      required this.displayName,
+      required this.product,
+      required this.cashAccountType,
+      required this.status,
+      required this.bic,
+      required this.linkedAccounts,
+      required this.maskedPan,
+      required this.usage,
+      required this.details,
+      required this.ownerAddressUnstructured,
+      required this.ownerAddressStructured});
 
   factory AccountDetailsInternal.fromJson(Map<String, dynamic> json) =>
       _$AccountDetailsInternalFromJson(json);

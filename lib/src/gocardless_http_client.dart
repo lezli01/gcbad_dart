@@ -154,7 +154,8 @@ class GoCardlessHttpClient {
         'https://bankaccountdata.gocardless.com/api/v2/accounts/$accountId/transactions/');
 
     if (dateFrom != null && dateTo != null) {
-      uri = uri.replace(queryParameters: {'date_from': dateFrom, 'date_to': dateTo});
+      uri = uri
+          .replace(queryParameters: {'date_from': dateFrom, 'date_to': dateTo});
     }
 
     final res = await http.get(uri, headers: {

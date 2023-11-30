@@ -23,8 +23,7 @@ class GoCardlessHttpUtils {
       } on GoCardlessException catch (_) {
         rethrow;
       } catch (_) {
-        throw GoCardlessException(
-            message: 'Unknown error occurred during communication');
+        throw ErrorResponse.createException(jsonDecode(body));
       }
     }
   }
