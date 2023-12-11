@@ -1,6 +1,38 @@
-import 'package:gcbad_dart/gcbad_dart.dart';
+import 'dart:convert';
+import 'dart:io';
 
-void main() {
-  var awesome = Awesome();
-  print('awesome: ${awesome.isAwesome}');
+import 'package:gcbad_dart/gcbad_dart.dart';
+import 'package:gcbad_dart/src/gocardless_country_code.dart';
+
+Future printNumPerCountry(GoCardlessBankAccountDataClient client) async {
+  for (var country in GoCardlessCountryCode.values
+      .where((element) => element != GoCardlessCountryCode.invalid)) {
+    var institutions = await client.getInstitutionMetadatas(country: country);
+    print('${country.code}: ${institutions.length}');
+  }
+}
+
+Future printAccountDetails(GoCardlessBankAccountDataClient client) async {
+  var institution = await client.getSandboxInstitution();
+  var agreement = await client.createAgreement(institution);
+  var requisition = await client.createRequisition(agreement);
+
+  print(requisition.link);
+  requisition = await client.waitForRequisitionLink(requisition);
+  var accounts = await client.getAccounts(requisition);
+
+  for (var account in accounts) {
+    print(account.ownerName);
+    print(JsonEncoder.withIndent('  ')
+        .convert(await client.getBalances(account)));
+  }
+}
+
+void main() async {
+  var client = GoCardlessBankAccountDataClient(
+      secretId: Platform.environment['GCBAD_ID']!,
+      secretKey: Platform.environment['GCBAD_KEY']!);
+
+  await printNumPerCountry(client);
+  await printAccountDetails(client);
 }

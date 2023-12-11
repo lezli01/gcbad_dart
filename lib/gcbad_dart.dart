@@ -3,6 +3,4 @@
 /// More dartdocs go here.
 library;
 
-export 'src/gcbad_dart_base.dart';
-
-// TODO: Export any libraries intended for clients of this package.
+export 'src/gocardless_bank_account_data_client.dart';

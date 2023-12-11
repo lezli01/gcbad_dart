@@ -1,16 +1,90 @@
+@Timeout(Duration(minutes: 1))
+
+import 'dart:convert';
+
 import 'package:gcbad_dart/gcbad_dart.dart';
+import 'package:gcbad_dart/src/models/requisition.dart';
 import 'package:test/test.dart';
+
+import 'sandbox_client.dart';
 
 void main() {
   group('A group of tests', () {
-    final awesome = Awesome();
+    late GoCardlessBankAccountDataClient client;
+    late Requisition requisition;
 
-    setUp(() {
-      // Additional setup goes here.
+    setUp(() async {
+      (client, requisition) = await SandboxClient().waitForRequisition();
     });
 
-    test('First Test', () {
-      expect(awesome.isAwesome, isTrue);
+    test('Get accounts', () async {
+      var accounts = await client.getAccounts(requisition);
+
+      expect(accounts.length, 2);
+      expect(accounts[0].ownerName, 'John Doe');
+      expect(accounts[1].ownerName, 'Jane Doe');
+
+      accounts = await client.getAccountsById(requisition.id);
+
+      expect(accounts.length, 2);
+      expect(accounts[0].ownerName, 'John Doe');
+      expect(accounts[1].ownerName, 'Jane Doe');
+    });
+
+    test('Get balances', () async {
+      var accounts = await client.getAccounts(requisition);
+
+      for (var account in accounts) {
+        var balances = await client.getBalances(account);
+
+        expect(balances.balances.length, 2);
+        expect(balances.balances[0].balanceAmount.amount, '1913.12');
+        expect(balances.balances[0].balanceAmount.currency, 'EUR');
+        expect(balances.balances[1].balanceAmount.amount, '1913.12');
+        expect(balances.balances[1].balanceAmount.currency, 'EUR');
+
+        balances = await client.getBalancesById(account.id);
+
+        expect(balances.balances.length, 2);
+        expect(balances.balances[0].balanceAmount.amount, '1913.12');
+        expect(balances.balances[0].balanceAmount.currency, 'EUR');
+        expect(balances.balances[1].balanceAmount.amount, '1913.12');
+        expect(balances.balances[1].balanceAmount.currency, 'EUR');
+      }
+    });
+
+    test('Get account details', () async {
+      var accounts = await client.getAccounts(requisition);
+      expect(accounts.length, 2);
+
+      var details = await client.getAccountDetails(accounts[0]);
+
+      expect(details.account.resourceId, '01F3NS4YV94RA29YCH8R0F6BMF');
+      expect(details.account.iban, 'GL1984130000084136');
+      expect(details.account.currency, 'EUR');
+      expect(details.account.ownerName, 'John Doe');
+      expect(details.account.name, 'Main Account');
+      expect(details.account.product, 'Checkings');
+      expect(details.account.cashAccountType, 'CACC');
+
+      details = await client.getAccountDetails(accounts[1]);
+
+      expect(details.account.resourceId, '01F3NS5ASCNMVCTEJDT0G215YE');
+      expect(details.account.iban, 'GL2490330000090332');
+      expect(details.account.currency, 'EUR');
+      expect(details.account.ownerName, 'Jane Doe');
+      expect(details.account.name, 'Main Account');
+      expect(details.account.product, 'Checkings');
+      expect(details.account.cashAccountType, 'CACC');
+    });
+
+    test('Get transactions', () async {
+      var accounts = await client.getAccounts(requisition);
+      expect(accounts.length, 2);
+
+      var transactions = await client.getTransactions(accounts[0],
+          dateFrom: DateTime(2023, 11, 26), dateTo: DateTime(2023, 11, 28));
+      print(JsonEncoder.withIndent('  ').convert(transactions));
     });
   });
 }
