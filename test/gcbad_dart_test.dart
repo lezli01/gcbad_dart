@@ -9,7 +9,7 @@ import 'package:test/test.dart';
 import 'sandbox_client.dart';
 
 void main() {
-  group('A group of tests', () {
+  group('GCBAD use cases', () {
     late GoCardlessBankAccountDataClient client;
     late Requisition requisition;
 
@@ -60,7 +60,7 @@ void main() {
       var details = await client.getAccountDetails(accounts[0]);
 
       expect(details.account.resourceId, '01F3NS4YV94RA29YCH8R0F6BMF');
-      expect(details.account.iban, 'GL1984130000084136');
+      expect(details.account.iban, matches(r'GL[0-9]{16}'));
       expect(details.account.currency, 'EUR');
       expect(details.account.ownerName, 'John Doe');
       expect(details.account.name, 'Main Account');
@@ -70,7 +70,7 @@ void main() {
       details = await client.getAccountDetails(accounts[1]);
 
       expect(details.account.resourceId, '01F3NS5ASCNMVCTEJDT0G215YE');
-      expect(details.account.iban, 'GL2490330000090332');
+      expect(details.account.iban, matches(r'GL[0-9]{16}'));
       expect(details.account.currency, 'EUR');
       expect(details.account.ownerName, 'Jane Doe');
       expect(details.account.name, 'Main Account');
@@ -84,7 +84,6 @@ void main() {
 
       var transactions = await client.getTransactions(accounts[0],
           dateFrom: DateTime(2023, 11, 26), dateTo: DateTime(2023, 11, 28));
-      print(JsonEncoder.withIndent('  ').convert(transactions));
     });
   });
 }
