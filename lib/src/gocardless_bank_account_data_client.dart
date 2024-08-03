@@ -8,6 +8,7 @@ import 'package:gcbad_dart/src/models/account_details.dart';
 import 'package:gcbad_dart/src/models/balances.dart';
 import 'package:gcbad_dart/src/models/end_user_agreement.dart';
 import 'package:gcbad_dart/src/models/end_user_agreement_request.dart';
+import 'package:gcbad_dart/src/models/information_to_access.dart';
 import 'package:gcbad_dart/src/models/institution.dart';
 import 'package:gcbad_dart/src/models/institution_metadata.dart';
 import 'package:gcbad_dart/src/models/requisition.dart';
@@ -43,14 +44,43 @@ class GoCardlessBankAccountDataClient {
     return getInstitutionById(sandboxInstitutionId);
   }
 
-  Future<EndUserAgreement> createAgreementById(String institutionId) async {
+  Future<EndUserAgreement> createAgreementById(
+      String institutionId,
+      int maxHistoricalDays,
+      int accessValidForDays,
+      List<InformationToAccess> accessScope) async {
+    var request = EndUserAgreementRequest(
+        institutionId: institutionId,
+        maxHistoricalDays: maxHistoricalDays,
+        accessValidForDays: accessValidForDays,
+        accessScope: accessScope);
+
+    return webClient.requestAgreement(jsonEncode(request));
+  }
+
+  Future<EndUserAgreement> createAgreement(
+      InstitutionMetadata institutionMetadata,
+      int maxHistoricalDays,
+      int accessValidForDays,
+      List<InformationToAccess> accessScope) async {
+    var request = EndUserAgreementRequest(
+        institutionId: institutionMetadata.id,
+        maxHistoricalDays: maxHistoricalDays,
+        accessValidForDays: accessValidForDays,
+        accessScope: accessScope);
+
+    return webClient.requestAgreement(jsonEncode(request));
+  }
+
+  Future<EndUserAgreement> createDefaultAgreementById(
+      String institutionId) async {
     var request =
         EndUserAgreementRequest.withDefaults(institutionId: institutionId);
 
     return webClient.requestAgreement(jsonEncode(request));
   }
 
-  Future<EndUserAgreement> createAgreement(
+  Future<EndUserAgreement> createDefaultAgreement(
       InstitutionMetadata institutionMetadata) async {
     var request = EndUserAgreementRequest.withDefaults(
         institutionId: institutionMetadata.id);

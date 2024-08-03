@@ -11,8 +11,11 @@ Institution _$InstitutionFromJson(Map<String, dynamic> json) => $checkedCreate(
       json,
       ($checkedConvert) {
         final val = Institution(
-          supportedFeatures: $checkedConvert('supported_features',
-              (v) => (v as List<dynamic>).map((e) => e as String).toList()),
+          supportedFeatures: $checkedConvert(
+              'supported_features',
+              (v) => (v as List<dynamic>)
+                  .map((e) => $enumDecode(_$InstitutionFeatureEnumMap, e))
+                  .toList()),
           identificationCodes: $checkedConvert('identification_codes',
               (v) => (v as List<dynamic>).map((e) => e as String).toList()),
           id: $checkedConvert('id', (v) => v as String),
@@ -54,10 +57,26 @@ Map<String, dynamic> _$InstitutionToJson(Institution instance) {
       .map((e) => _$GoCardlessCountryCodeEnumMap[e]!)
       .toList();
   val['logo'] = instance.logo;
-  val['supported_features'] = instance.supportedFeatures;
+  val['supported_features'] = instance.supportedFeatures
+      .map((e) => _$InstitutionFeatureEnumMap[e]!)
+      .toList();
   val['identification_codes'] = instance.identificationCodes;
   return val;
 }
+
+const _$InstitutionFeatureEnumMap = {
+  InstitutionFeature.submitPayment: 'submit_payment',
+  InstitutionFeature.payments: 'payments',
+  InstitutionFeature.pendingTransactions: 'pending_transactions',
+  InstitutionFeature.readDebtorAccount: 'read_debtor_account',
+  InstitutionFeature.readRefundAccount: 'read_refund_account',
+  InstitutionFeature.cardAccounts: 'card_accounts',
+  InstitutionFeature.privateAccounts: 'private_accounts',
+  InstitutionFeature.businessAccounts: 'business_accounts',
+  InstitutionFeature.corporateAccounts: 'corporate_accounts',
+  InstitutionFeature.ssnVerification: 'ssn_verification',
+  InstitutionFeature.accountSelection: 'account_selection',
+};
 
 const _$GoCardlessCountryCodeEnumMap = {
   GoCardlessCountryCode.invalid: 'XX',

@@ -1,3 +1,4 @@
+import 'package:gcbad_dart/src/models/institution_feature.dart';
 import 'package:gcbad_dart/src/models/institution_metadata.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:gcbad_dart/src/gocardless_country_code.dart';
@@ -7,7 +8,7 @@ part 'institution.g.dart';
 @JsonSerializable()
 class Institution extends InstitutionMetadata {
   @JsonKey(name: 'supported_features')
-  final List<String> supportedFeatures;
+  final List<InstitutionFeature> supportedFeatures;
   @JsonKey(name: 'identification_codes')
   final List<String> identificationCodes;
 

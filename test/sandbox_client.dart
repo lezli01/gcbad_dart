@@ -1,7 +1,6 @@
 import 'dart:io';
 
 import 'package:gcbad_dart/gcbad_dart.dart';
-import 'package:gcbad_dart/src/models/requisition.dart';
 import 'package:puppeteer/puppeteer.dart';
 
 class SandboxClient {
@@ -32,7 +31,12 @@ class SandboxClient {
 
   Future _createRequisition() async {
     var institution = await client.getSandboxInstitution();
-    var agreement = await client.createAgreement(institution);
+    var agreement = await client.createAgreement(
+        institution, int.parse(institution.transactionTotalDays!), 90, [
+      InformationToAccess.balances,
+      InformationToAccess.details,
+      InformationToAccess.transactions
+    ]);
     requisition = await client.createRequisition(agreement);
 
     var browser =
