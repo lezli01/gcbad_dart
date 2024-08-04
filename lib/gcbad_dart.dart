@@ -16,6 +16,7 @@ export 'src/models/end_user_agreement.dart';
 export 'src/models/end_user_agreement_request.dart';
 export 'src/models/information_to_access.dart';
 export 'src/models/institution.dart';
+export 'src/models/institution_feature.dart';
 export 'src/models/institution_metadata.dart';
 export 'src/models/requisition.dart';
 export 'src/models/requisition_request.dart';

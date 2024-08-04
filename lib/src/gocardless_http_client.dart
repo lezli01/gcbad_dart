@@ -40,8 +40,7 @@ class GoCardlessHttpClient {
       'Authorization': 'Bearer ${_token!.accessToken}'
     });
 
-    return GoCardlessHttpUtils.parseList(
-        res.body, InstitutionMetadata.fromJson);
+    return GoCardlessHttpUtils.parseList(res, InstitutionMetadata.fromJson);
   }
 
   Future<Institution> getInstitution(String id) async {
@@ -55,7 +54,7 @@ class GoCardlessHttpClient {
           'Authorization': 'Bearer ${_token!.accessToken}'
         });
 
-    return GoCardlessHttpUtils.parse(res.body, Institution.fromJson);
+    return GoCardlessHttpUtils.parse(res, Institution.fromJson);
   }
 
   Future<EndUserAgreement> requestAgreement(dynamic body) async {
@@ -71,7 +70,7 @@ class GoCardlessHttpClient {
         },
         body: body);
 
-    return GoCardlessHttpUtils.parse(res.body, EndUserAgreement.fromJson);
+    return GoCardlessHttpUtils.parse(res, EndUserAgreement.fromJson);
   }
 
   Future<Requisition> requestRequisition(dynamic body) async {
@@ -87,7 +86,7 @@ class GoCardlessHttpClient {
         },
         body: body);
 
-    return GoCardlessHttpUtils.parse(res.body, Requisition.fromJson);
+    return GoCardlessHttpUtils.parse(res, Requisition.fromJson);
   }
 
   Future<Requisition> getRequisition(String requisitionId) async {
@@ -101,7 +100,7 @@ class GoCardlessHttpClient {
           'Authorization': 'Bearer ${_token!.accessToken}'
         });
 
-    return GoCardlessHttpUtils.parse(res.body, Requisition.fromJson);
+    return GoCardlessHttpUtils.parse(res, Requisition.fromJson);
   }
 
   Future<Account> getAccount(String accountId) async {
@@ -115,7 +114,7 @@ class GoCardlessHttpClient {
           'Authorization': 'Bearer ${_token!.accessToken}'
         });
 
-    return GoCardlessHttpUtils.parse(res.body, Account.fromJson);
+    return GoCardlessHttpUtils.parse(res, Account.fromJson);
   }
 
   Future<Balances> getBalances(String accountId) async {
@@ -129,7 +128,7 @@ class GoCardlessHttpClient {
           'Authorization': 'Bearer ${_token!.accessToken}'
         });
 
-    return GoCardlessHttpUtils.parse(res.body, Balances.fromJson);
+    return GoCardlessHttpUtils.parse(res, Balances.fromJson);
   }
 
   Future<AccountDetails> getAccountDetails(String accountId) async {
@@ -143,7 +142,7 @@ class GoCardlessHttpClient {
           'Authorization': 'Bearer ${_token!.accessToken}'
         });
 
-    return GoCardlessHttpUtils.parse(res.body, AccountDetails.fromJson);
+    return GoCardlessHttpUtils.parse(res, AccountDetails.fromJson);
   }
 
   Future<Transactions> getTransactions(
@@ -163,7 +162,7 @@ class GoCardlessHttpClient {
       'Authorization': 'Bearer ${_token!.accessToken}'
     });
 
-    return GoCardlessHttpUtils.parse(res.body, Transactions.fromJson);
+    return GoCardlessHttpUtils.parse(res, Transactions.fromJson);
   }
 
   Future _checkToken() async {
@@ -186,7 +185,7 @@ class GoCardlessHttpClient {
         },
         body: jsonEncode(_secretAndKey));
 
-    _token = GoCardlessHttpUtils.parse(res.body, Token.fromJson);
+    _token = GoCardlessHttpUtils.parse(res, Token.fromJson);
     _tokenRequestedAt = DateTime.now();
   }
 }

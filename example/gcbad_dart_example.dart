@@ -58,8 +58,37 @@ void main() async {
       secretId: Platform.environment['GCBAD_ID']!,
       secretKey: Platform.environment['GCBAD_KEY']!);
 
-  var inst = await client.getInstitutionById('KH_OKHBHUHB');
+  // var inst = await client
+  //     .getInstitutionById('KH_OKHBHUHB');
+  // var agreement = await client.createDefaultAgreement(inst);
+  // var req = await client.createRequisition(agreement);
+  //
+  // print(req.link);
+  // req = await client.waitForRequisitionLink(req);
+  // print(json.encode(req));
 
+  var f = File('example/.data');
+  var req = Requisition.fromJson(json.decode(await f.readAsString()));
+
+  var accounts = await client.getAccounts(req);
+
+  var allTrans = <Transaction>[];
+
+  for (var account in accounts) {
+    var trans = await client.getTransactions(account,
+        dateFrom: DateTime.now().add(Duration(days: -30)),
+        dateTo: DateTime.now());
+
+    allTrans += trans.transactions.booked;
+    allTrans += trans.transactions.pending;
+  }
+
+  var s = HashSet<String>();
+  for (var trans in allTrans) {
+    s.add(trans.creditorName ?? '');
+  }
+
+  s.forEach(print);
   //await collectFeatures(client);
   // await printNumPerCountry(client);
   // await printAccountDetails(client);
