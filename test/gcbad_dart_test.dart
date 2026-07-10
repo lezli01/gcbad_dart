@@ -18,15 +18,21 @@ void main() {
     test('Get accounts', () async {
       var accounts = await client.getAccounts(requisition);
 
+      // GoCardless does not guarantee account ordering, so assert on the set
+      // of owners rather than positional indices.
       expect(accounts.length, 2);
-      expect(accounts[0].ownerName, 'John Doe');
-      expect(accounts[1].ownerName, 'Jane Doe');
+      expect(
+        accounts.map((a) => a.ownerName),
+        containsAll(['John Doe', 'Jane Doe']),
+      );
 
       accounts = await client.getAccountsById(requisition.id);
 
       expect(accounts.length, 2);
-      expect(accounts[0].ownerName, 'John Doe');
-      expect(accounts[1].ownerName, 'Jane Doe');
+      expect(
+        accounts.map((a) => a.ownerName),
+        containsAll(['John Doe', 'Jane Doe']),
+      );
     });
 
     test('Get balances', () async {
@@ -55,7 +61,12 @@ void main() {
       var accounts = await client.getAccounts(requisition);
       expect(accounts.length, 2);
 
-      var details = await client.getAccountDetails(accounts[0]);
+      // Look accounts up by owner rather than by index — ordering is not
+      // guaranteed by the API.
+      final john = accounts.firstWhere((a) => a.ownerName == 'John Doe');
+      final jane = accounts.firstWhere((a) => a.ownerName == 'Jane Doe');
+
+      var details = await client.getAccountDetails(john);
 
       expect(details.account.resourceId, '01F3NS4YV94RA29YCH8R0F6BMF');
       expect(details.account.iban, matches(r'GL[0-9]{16}'));
@@ -65,7 +76,7 @@ void main() {
       expect(details.account.product, 'Checkings');
       expect(details.account.cashAccountType, 'CACC');
 
-      details = await client.getAccountDetails(accounts[1]);
+      details = await client.getAccountDetails(jane);
 
       expect(details.account.resourceId, '01F3NS5ASCNMVCTEJDT0G215YE');
       expect(details.account.iban, matches(r'GL[0-9]{16}'));
@@ -80,10 +91,13 @@ void main() {
       var accounts = await client.getAccounts(requisition);
       expect(accounts.length, 2);
 
+      // The sandbox generates transactions relative to the current date, so
+      // query a recent trailing window rather than a fixed historical range.
+      final now = DateTime.now();
       var transactions = await client.getTransactions(
         accounts[0],
-        dateFrom: DateTime(2023, 11, 26),
-        dateTo: DateTime(2023, 11, 28),
+        dateFrom: now.subtract(const Duration(days: 30)),
+        dateTo: now,
       );
 
       expect(transactions.transactions.booked, isNotEmpty);

@@ -52,10 +52,24 @@ class SandboxClient {
     var page = await browser.newPage();
     page.defaultTimeout = Duration.zero;
 
+    // GoCardless sandbox consent flow, three steps:
+    //   1. "Agree and continue" on the GoCardless consent page (.btn-success)
+    //   2. "Sign in" on the Sandbox Finance bank login page (.btn-primary)
+    //   3. "Approve" on the consent/approve page (.btn-primary)
+    // Signing in kicks off a chain of OAuth redirects before the approve page
+    // loads, so we must wait for that page before clicking — otherwise we race
+    // the still-present "Sign in" button (also .btn-primary) and click a page
+    // that is mid-navigation. Approving transitions the requisition to `linked`.
     await page.goto(requisition.link, wait: Until.networkIdle);
+    await page.waitForSelector(".btn-success");
     await page.click(".btn-success");
+
     await page.waitForSelector(".btn-primary");
     await page.click(".btn-primary");
+
+    while (!(page.url ?? "").contains("consent/approve")) {
+      await Future.delayed(Duration(milliseconds: 200));
+    }
     await page.waitForSelector(".btn-primary");
     await page.click(".btn-primary");
 
