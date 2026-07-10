@@ -178,6 +178,17 @@ void main() {
         GoCardlessCountryCode.invalid,
       ]);
     });
+
+    test('a missing logo decodes to null rather than failing', () {
+      final metadata = decode(
+        '{"id":"X","name":"X Bank","bic":null,"transaction_total_days":null,'
+        '"countries":["GB"]}',
+        InstitutionMetadata.fromJson,
+      );
+
+      expect(metadata.logo, isNull);
+      expect(metadata.countries, [GoCardlessCountryCode.unitedKingdom]);
+    });
   });
 
   group('null omission (include_if_null: false)', () {

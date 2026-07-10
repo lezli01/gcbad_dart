@@ -31,7 +31,7 @@ InstitutionMetadata _$InstitutionMetadataFromJson(Map<String, dynamic> json) =>
                 )
                 .toList(),
           ),
-          logo: $checkedConvert('logo', (v) => v as String),
+          logo: $checkedConvert('logo', (v) => v as String?),
         );
         return val;
       },
@@ -48,7 +48,7 @@ Map<String, dynamic> _$InstitutionMetadataToJson(
   'countries': instance.countries
       .map((e) => _$GoCardlessCountryCodeEnumMap[e]!)
       .toList(),
-  'logo': instance.logo,
+  'logo': ?instance.logo,
 };
 
 const _$GoCardlessCountryCodeEnumMap = {

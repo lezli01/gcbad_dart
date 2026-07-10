@@ -17,8 +17,11 @@ class InstitutionMetadata {
   // coverage grows over time) to `invalid` instead of failing the whole parse.
   @JsonKey(name: 'countries', unknownEnumValue: GoCardlessCountryCode.invalid)
   final List<GoCardlessCountryCode> countries;
+  // Nullable: a logo is not guaranteed for every institution, and a missing
+  // one must not fail the whole parse (getInstitutionMetadatas decodes every
+  // institution at once).
   @JsonKey(name: 'logo')
-  final String logo;
+  final String? logo;
 
   InstitutionMetadata({
     required this.id,
