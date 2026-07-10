@@ -21,7 +21,8 @@ jobs:
       - name: Analyze
         run: dart analyze --fatal-infos
 
-      # Only the offline unit tests run in CI. test/gcbad_dart_test.dart drives
-      # the live GoCardless sandbox and needs GCBAD_ID/GCBAD_KEY plus a browser.
+      # Run every offline test. The live sandbox suite (tag: live,
+      # test/gcbad_dart_test.dart) is excluded — it needs GCBAD_ID/GCBAD_KEY
+      # plus a browser.
       - name: Run unit tests
-        run: dart test test/error_response_test.dart test/httputils_test.dart
+        run: dart test -x live

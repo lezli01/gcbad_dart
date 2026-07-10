@@ -41,17 +41,26 @@ be overwritten.
 
 ## Tests
 
-- `test/error_response_test.dart` and `test/httputils_test.dart` are offline
-  unit tests and run without any setup.
-- `test/gcbad_dart_test.dart` runs an end-to-end flow against the GoCardless
-  **sandbox** and requires:
+The offline tests need no setup or credentials and cover the models,
+serialization, the HTTP client and token flow (via a mock transport), error
+handling, and client orchestration. They are what CI runs:
+
+```shell
+fvm dart test -x live     # every offline test (excludes the live sandbox suite)
+```
+
+The live sandbox suite (`test/gcbad_dart_test.dart`, tagged `live`) runs an
+end-to-end flow against the GoCardless **sandbox** and requires:
   - `GCBAD_ID` and `GCBAD_KEY` environment variables (sandbox API credentials), and
   - network access plus a headless browser (it uses `puppeteer` to click
     through the bank-consent web flow).
 
-  ```shell
-  GCBAD_ID=... GCBAD_KEY=... fvm dart test test/gcbad_dart_test.dart
-  ```
+```shell
+GCBAD_ID=... GCBAD_KEY=... fvm dart test -t live
+```
+
+Without credentials the live suite is reported as skipped rather than failing,
+so a bare `fvm dart test` is safe to run.
 
 ## Guidelines
 
