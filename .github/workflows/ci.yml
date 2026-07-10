@@ -5,12 +5,23 @@ on:
     branches: [master]
   pull_request:
 
+# Least privilege: CI only needs to read the repository contents.
+permissions:
+  contents: read
+
+# Cancel superseded runs on the same ref (e.g. successive pushes to a PR).
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
-  build:
+  test:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - uses: dart-lang/setup-dart@v1
+        with:
+          sdk: stable
 
       - name: Install dependencies
         run: dart pub get
@@ -24,5 +35,21 @@ jobs:
       # Run every offline test. The live sandbox suite (tag: live,
       # test/gcbad_dart_test.dart) is excluded — it needs GCBAD_ID/GCBAD_KEY
       # plus a browser.
-      - name: Run unit tests
+      - name: Run offline tests
         run: dart test -x live
+
+  package:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dart-lang/setup-dart@v1
+        with:
+          sdk: stable
+
+      - name: Install dependencies
+        run: dart pub get
+
+      # Catch packaging problems (missing files, invalid pubspec, oversized
+      # archive) before they ever reach pub.dev. No credentials required.
+      - name: Validate publishable package
+        run: dart pub publish --dry-run

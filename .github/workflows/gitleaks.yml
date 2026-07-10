@@ -1,0 +1,30 @@
+name: Secret scan
+
+on:
+  push:
+  pull_request:
+  schedule:
+    # Weekly full-history sweep (Mondays 04:30 UTC) to catch anything that
+    # slipped in outside of a pull request.
+    - cron: "30 4 * * 1"
+  workflow_dispatch:
+
+# Least privilege: the scan only needs to read the repository contents.
+permissions:
+  contents: read
+
+jobs:
+  gitleaks:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          # Full history so the scan covers every commit, not just the tip.
+          fetch-depth: 0
+
+      - name: Run gitleaks
+        uses: gitleaks/gitleaks-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          # gitleaks-action is free for personal and public repositories; a
+          # GITLEAKS_LICENSE is only required for organization-owned repos.
