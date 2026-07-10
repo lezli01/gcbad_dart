@@ -31,15 +31,39 @@ class GoCardlessHttpUtils {
     try {
       return fromJson(body);
     } catch (_) {
+      // The body did not parse as the expected model. Re-interpret it as a
+      // GoCardless error payload so callers only ever see a
+      // GoCardlessException, never a raw JSON/HTTP error.
+      throw _errorFrom(body);
+    }
+  }
+
+  /// Builds a [GoCardlessException] from a response body that failed to parse
+  /// as the expected model.
+  ///
+  /// Handles three shapes: a well-formed GoCardless error object (via
+  /// [ErrorResponse.exception]), any other JSON value (via the defensive
+  /// [ErrorResponse.createException]), and a body that is not valid JSON at all
+  /// (a generic exception) — so the contract of surfacing only
+  /// [GoCardlessException] holds even for HTML gateway errors or empty bodies.
+  static GoCardlessException _errorFrom(String body) {
+    dynamic decoded;
+    try {
+      decoded = jsonDecode(body);
+    } catch (_) {
+      return GoCardlessException(
+        message: 'Unknown error occurred during communication.',
+      );
+    }
+
+    if (decoded is Map<String, dynamic>) {
       try {
-        throw ErrorResponse.fromJson(
-          jsonDecode(body) as Map<String, dynamic>,
-        ).exception;
-      } on GoCardlessException catch (_) {
-        rethrow;
+        return ErrorResponse.fromJson(decoded).exception;
       } catch (_) {
-        throw ErrorResponse.createException(jsonDecode(body));
+        // Not a well-formed ErrorResponse; fall through to the defensive path.
       }
     }
+
+    return ErrorResponse.createException(decoded);
   }
 }
