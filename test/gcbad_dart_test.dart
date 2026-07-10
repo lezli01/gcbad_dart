@@ -80,8 +80,11 @@ void main() {
       var accounts = await client.getAccounts(requisition);
       expect(accounts.length, 2);
 
-      var transactions = await client.getTransactions(accounts[0],
-          dateFrom: DateTime(2023, 11, 26), dateTo: DateTime(2023, 11, 28));
+      var transactions = await client.getTransactions(
+        accounts[0],
+        dateFrom: DateTime(2023, 11, 26),
+        dateTo: DateTime(2023, 11, 28),
+      );
 
       expect(transactions.transactions.booked, isNotEmpty);
     });

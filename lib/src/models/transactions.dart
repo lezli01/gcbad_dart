@@ -114,34 +114,35 @@ class Transaction {
   @JsonKey(name: 'internalTransactionId')
   final String? internalTransactionId;
 
-  Transaction(
-      {required this.transactionId,
-      required this.entryReference,
-      required this.endToEndId,
-      required this.mandateId,
-      required this.checkId,
-      required this.creditorId,
-      required this.bookingDate,
-      required this.valueDate,
-      required this.bookingDateTime,
-      required this.valueDateTime,
-      required this.transactionAmount,
-      required this.currencyExchange,
-      required this.creditorName,
-      required this.creditorAccount,
-      required this.ultimateCreditor,
-      required this.debtorName,
-      required this.debtorAccount,
-      required this.ultimateDebtor,
-      required this.remittanceInformationUnstructured,
-      required this.remittanceInformationUnstructuredArray,
-      required this.remittanceInformationStructured,
-      required this.remittanceInformationStructuredArray,
-      required this.additionalInformation,
-      required this.purposeCode,
-      required this.bankTransactionCode,
-      required this.proprietaryBankTransactionCode,
-      required this.internalTransactionId});
+  Transaction({
+    required this.transactionId,
+    required this.entryReference,
+    required this.endToEndId,
+    required this.mandateId,
+    required this.checkId,
+    required this.creditorId,
+    required this.bookingDate,
+    required this.valueDate,
+    required this.bookingDateTime,
+    required this.valueDateTime,
+    required this.transactionAmount,
+    required this.currencyExchange,
+    required this.creditorName,
+    required this.creditorAccount,
+    required this.ultimateCreditor,
+    required this.debtorName,
+    required this.debtorAccount,
+    required this.ultimateDebtor,
+    required this.remittanceInformationUnstructured,
+    required this.remittanceInformationUnstructuredArray,
+    required this.remittanceInformationStructured,
+    required this.remittanceInformationStructuredArray,
+    required this.additionalInformation,
+    required this.purposeCode,
+    required this.bankTransactionCode,
+    required this.proprietaryBankTransactionCode,
+    required this.internalTransactionId,
+  });
 
   factory Transaction.fromJson(Map<String, dynamic> json) =>
       _$TransactionFromJson(json);
@@ -184,13 +185,14 @@ class CurrencyExchange {
   @JsonKey(name: 'contractIdentification')
   final String? contractIdentification;
 
-  CurrencyExchange(
-      {required this.sourceCurrency,
-      required this.exchangeRate,
-      required this.unitCurrency,
-      required this.targetCurrency,
-      required this.quotationDate,
-      required this.contractIdentification});
+  CurrencyExchange({
+    required this.sourceCurrency,
+    required this.exchangeRate,
+    required this.unitCurrency,
+    required this.targetCurrency,
+    required this.quotationDate,
+    required this.contractIdentification,
+  });
 
   factory CurrencyExchange.fromJson(Map<String, dynamic> json) =>
       _$CurrencyExchangeFromJson(json);
@@ -218,13 +220,14 @@ class AccountInfo {
   @JsonKey(name: 'currency')
   final String? currency;
 
-  AccountInfo(
-      {required this.iban,
-      required this.bban,
-      required this.pan,
-      required this.maskedPan,
-      required this.msisdn,
-      required this.currency});
+  AccountInfo({
+    required this.iban,
+    required this.bban,
+    required this.pan,
+    required this.maskedPan,
+    required this.msisdn,
+    required this.currency,
+  });
 
   factory AccountInfo.fromJson(Map<String, dynamic> json) =>
       _$AccountInfoFromJson(json);

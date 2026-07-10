@@ -15,13 +15,16 @@ InstitutionMetadata _$InstitutionMetadataFromJson(Map<String, dynamic> json) =>
           id: $checkedConvert('id', (v) => v as String),
           name: $checkedConvert('name', (v) => v as String),
           bic: $checkedConvert('bic', (v) => v as String?),
-          transactionTotalDays:
-              $checkedConvert('transaction_total_days', (v) => v as String?),
+          transactionTotalDays: $checkedConvert(
+            'transaction_total_days',
+            (v) => v as String?,
+          ),
           countries: $checkedConvert(
-              'countries',
-              (v) => (v as List<dynamic>)
-                  .map((e) => $enumDecode(_$GoCardlessCountryCodeEnumMap, e))
-                  .toList()),
+            'countries',
+            (v) => (v as List<dynamic>)
+                .map((e) => $enumDecode(_$GoCardlessCountryCodeEnumMap, e))
+                .toList(),
+          ),
           logo: $checkedConvert('logo', (v) => v as String),
         );
         return val;
@@ -29,26 +32,18 @@ InstitutionMetadata _$InstitutionMetadataFromJson(Map<String, dynamic> json) =>
       fieldKeyMap: const {'transactionTotalDays': 'transaction_total_days'},
     );
 
-Map<String, dynamic> _$InstitutionMetadataToJson(InstitutionMetadata instance) {
-  final val = <String, dynamic>{
-    'id': instance.id,
-    'name': instance.name,
-  };
-
-  void writeNotNull(String key, dynamic value) {
-    if (value != null) {
-      val[key] = value;
-    }
-  }
-
-  writeNotNull('bic', instance.bic);
-  writeNotNull('transaction_total_days', instance.transactionTotalDays);
-  val['countries'] = instance.countries
+Map<String, dynamic> _$InstitutionMetadataToJson(
+  InstitutionMetadata instance,
+) => <String, dynamic>{
+  'id': instance.id,
+  'name': instance.name,
+  'bic': ?instance.bic,
+  'transaction_total_days': ?instance.transactionTotalDays,
+  'countries': instance.countries
       .map((e) => _$GoCardlessCountryCodeEnumMap[e]!)
-      .toList();
-  val['logo'] = instance.logo;
-  return val;
-}
+      .toList(),
+  'logo': instance.logo,
+};
 
 const _$GoCardlessCountryCodeEnumMap = {
   GoCardlessCountryCode.invalid: 'XX',

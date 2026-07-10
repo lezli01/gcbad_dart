@@ -18,13 +18,14 @@ class InstitutionMetadata {
   @JsonKey(name: 'logo')
   final String logo;
 
-  InstitutionMetadata(
-      {required this.id,
-      required this.name,
-      required this.bic,
-      required this.transactionTotalDays,
-      required this.countries,
-      required this.logo});
+  InstitutionMetadata({
+    required this.id,
+    required this.name,
+    required this.bic,
+    required this.transactionTotalDays,
+    required this.countries,
+    required this.logo,
+  });
 
   factory InstitutionMetadata.fromJson(Map<String, dynamic> json) =>
       _$InstitutionMetadataFromJson(json);

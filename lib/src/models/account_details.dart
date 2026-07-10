@@ -71,25 +71,26 @@ class AccountDetailsInternal {
   @JsonKey(name: 'ownerAddressStructured')
   final OwnerAddressStructured? ownerAddressStructured;
 
-  AccountDetailsInternal(
-      {required this.resourceId,
-      required this.iban,
-      required this.bban,
-      required this.msisdn,
-      required this.currency,
-      required this.ownerName,
-      required this.name,
-      required this.displayName,
-      required this.product,
-      required this.cashAccountType,
-      required this.status,
-      required this.bic,
-      required this.linkedAccounts,
-      required this.maskedPan,
-      required this.usage,
-      required this.details,
-      required this.ownerAddressUnstructured,
-      required this.ownerAddressStructured});
+  AccountDetailsInternal({
+    required this.resourceId,
+    required this.iban,
+    required this.bban,
+    required this.msisdn,
+    required this.currency,
+    required this.ownerName,
+    required this.name,
+    required this.displayName,
+    required this.product,
+    required this.cashAccountType,
+    required this.status,
+    required this.bic,
+    required this.linkedAccounts,
+    required this.maskedPan,
+    required this.usage,
+    required this.details,
+    required this.ownerAddressUnstructured,
+    required this.ownerAddressStructured,
+  });
 
   factory AccountDetailsInternal.fromJson(Map<String, dynamic> json) =>
       _$AccountDetailsInternalFromJson(json);
@@ -114,12 +115,13 @@ class OwnerAddressStructured {
   @JsonKey(name: 'country')
   final String? country;
 
-  OwnerAddressStructured(
-      {required this.streetName,
-      required this.buildingNumber,
-      required this.townName,
-      required this.postCode,
-      required this.country});
+  OwnerAddressStructured({
+    required this.streetName,
+    required this.buildingNumber,
+    required this.townName,
+    required this.postCode,
+    required this.country,
+  });
 
   factory OwnerAddressStructured.fromJson(Map<String, dynamic> json) =>
       _$OwnerAddressStructuredFromJson(json);

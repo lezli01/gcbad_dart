@@ -10,18 +10,23 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 This repo uses [Conventional Commits](https://www.conventionalcommits.org). Every commit message **and** pull request title must follow the `type(scope): description` format, e.g. `feat: add transaction pagination`, `fix(http): refresh token before expiry`, `docs: expand README usage`. Common types: `feat`, `fix`, `docs`, `test`, `refactor`, `chore`, `ci`.
 
+## Toolchain (FVM)
+
+The Flutter/Dart toolchain is pinned with [FVM](https://fvm.app). `.fvmrc` (committed) fixes the version to **Flutter 3.44.6** (Dart 3.12.2); the `.fvm/` cache directory is git-ignored. Run every Dart command through `fvm` so you use the pinned SDK, e.g. `fvm dart pub get`, `fvm dart test`. To provision the SDK after cloning, run `fvm install`. (CI uses `dart-lang/setup-dart@v1`, which tracks the latest stable Dart, so it stays in step with this pin.)
+
 ## Commands
 
 ```shell
-dart pub get                                        # install dependencies
-dart analyze                                        # static analysis (package:lints/recommended)
-dart format .                                        # format
-dart test                                           # run all tests
-dart test test/error_response_test.dart             # run a single test file
-dart test test/httputils_test.dart -n 'test name'   # run a single test by name
+fvm install                                             # provision the pinned SDK (after clone)
+fvm dart pub get                                        # install dependencies
+fvm dart analyze                                        # static analysis (package:lints/recommended)
+fvm dart format .                                        # format
+fvm dart test                                           # run all tests
+fvm dart test test/error_response_test.dart             # run a single test file
+fvm dart test test/httputils_test.dart -n 'test name'   # run a single test by name
 
 # Regenerate json_serializable code after editing any model with @JsonSerializable:
-dart run build_runner build --delete-conflicting-outputs
+fvm dart run build_runner build --delete-conflicting-outputs
 ```
 
 ### Tests requiring live credentials

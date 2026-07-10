@@ -19,14 +19,15 @@ class Account {
   @JsonKey(name: 'owner_name')
   final String? ownerName;
 
-  Account(
-      {required this.id,
-      required this.created,
-      required this.lastAccessed,
-      required this.iban,
-      required this.institutionId,
-      required this.status,
-      required this.ownerName});
+  Account({
+    required this.id,
+    required this.created,
+    required this.lastAccessed,
+    required this.iban,
+    required this.institutionId,
+    required this.status,
+    required this.ownerName,
+  });
 
   factory Account.fromJson(Map<String, dynamic> json) =>
       _$AccountFromJson(json);

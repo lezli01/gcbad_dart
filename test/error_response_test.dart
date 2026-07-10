@@ -8,11 +8,15 @@ void main() {
     setUp(() {});
 
     test('Test parsing', () {
-      ErrorResponse.fromJson(jsonDecode('{'
+      ErrorResponse.fromJson(
+        jsonDecode(
+          '{'
           '"summary": "",'
           '"detail": "",'
           '"status_code": 200'
-          '}'));
+          '}',
+        ),
+      );
     });
   });
 }

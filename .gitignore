@@ -11,3 +11,6 @@ pubspec.lock
 
 # Local scratch data (e.g. saved requisition dumps) used while running examples
 *.data
+
+# FVM Version Cache
+.fvm/

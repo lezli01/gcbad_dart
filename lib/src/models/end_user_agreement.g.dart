@@ -15,15 +15,20 @@ EndUserAgreement _$EndUserAgreementFromJson(Map<String, dynamic> json) =>
           id: $checkedConvert('id', (v) => v as String?),
           created: $checkedConvert('created', (v) => v as String?),
           institutionId: $checkedConvert('institution_id', (v) => v as String),
-          maxHistoricalDays:
-              $checkedConvert('max_historical_days', (v) => v as int),
-          accessValidForDays:
-              $checkedConvert('access_valid_for_days', (v) => v as int),
+          maxHistoricalDays: $checkedConvert(
+            'max_historical_days',
+            (v) => (v as num).toInt(),
+          ),
+          accessValidForDays: $checkedConvert(
+            'access_valid_for_days',
+            (v) => (v as num).toInt(),
+          ),
           accessScope: $checkedConvert(
-              'access_scope',
-              (v) => (v as List<dynamic>?)
-                  ?.map((e) => $enumDecode(_$InformationToAccessEnumMap, e))
-                  .toList()),
+            'access_scope',
+            (v) => (v as List<dynamic>?)
+                ?.map((e) => $enumDecode(_$InformationToAccessEnumMap, e))
+                .toList(),
+          ),
           accepted: $checkedConvert('accepted', (v) => v as String?),
         );
         return val;
@@ -32,32 +37,22 @@ EndUserAgreement _$EndUserAgreementFromJson(Map<String, dynamic> json) =>
         'institutionId': 'institution_id',
         'maxHistoricalDays': 'max_historical_days',
         'accessValidForDays': 'access_valid_for_days',
-        'accessScope': 'access_scope'
+        'accessScope': 'access_scope',
       },
     );
 
-Map<String, dynamic> _$EndUserAgreementToJson(EndUserAgreement instance) {
-  final val = <String, dynamic>{};
-
-  void writeNotNull(String key, dynamic value) {
-    if (value != null) {
-      val[key] = value;
-    }
-  }
-
-  writeNotNull('id', instance.id);
-  writeNotNull('created', instance.created);
-  val['institution_id'] = instance.institutionId;
-  val['max_historical_days'] = instance.maxHistoricalDays;
-  val['access_valid_for_days'] = instance.accessValidForDays;
-  writeNotNull(
-      'access_scope',
-      instance.accessScope
+Map<String, dynamic> _$EndUserAgreementToJson(EndUserAgreement instance) =>
+    <String, dynamic>{
+      'id': ?instance.id,
+      'created': ?instance.created,
+      'institution_id': instance.institutionId,
+      'max_historical_days': instance.maxHistoricalDays,
+      'access_valid_for_days': instance.accessValidForDays,
+      'access_scope': ?instance.accessScope
           ?.map((e) => _$InformationToAccessEnumMap[e]!)
-          .toList());
-  writeNotNull('accepted', instance.accepted);
-  return val;
-}
+          .toList(),
+      'accepted': ?instance.accepted,
+    };
 
 const _$InformationToAccessEnumMap = {
   InformationToAccess.balances: 'balances',

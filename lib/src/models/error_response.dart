@@ -16,12 +16,13 @@ class ErrorResponse {
   @JsonKey(name: '_error_code')
   final int? errorCode;
 
-  ErrorResponse(
-      {required this.summary,
-      required this.detail,
-      required this.type,
-      required this.statusCode,
-      required this.errorCode});
+  ErrorResponse({
+    required this.summary,
+    required this.detail,
+    required this.type,
+    required this.statusCode,
+    required this.errorCode,
+  });
 
   static GoCardlessException createException(dynamic json) {
     var message = 'Unknown error occurred during communication.';
@@ -67,7 +68,7 @@ class ErrorResponse {
     return GoCardlessException(message: message);
   }
 
-  get exception {
+  GoCardlessException get exception {
     if (summary != null && detail != null) {
       return GoCardlessException(message: '$summary: $detail ($statusCode)');
     }
@@ -81,7 +82,8 @@ class ErrorResponse {
     }
 
     return GoCardlessException(
-        message: 'Error during communication ($statusCode)');
+      message: 'Error during communication ($statusCode)',
+    );
   }
 
   factory ErrorResponse.fromJson(Map<String, dynamic> json) =>

@@ -18,10 +18,14 @@ RequisitionRequest _$RequisitionRequestFromJson(Map<String, dynamic> json) =>
           reference: $checkedConvert('reference', (v) => v as String?),
           userLanguage: $checkedConvert('user_language', (v) => v as String?),
           ssn: $checkedConvert('ssn', (v) => v as String?),
-          accountSelection:
-              $checkedConvert('account_selection', (v) => v as bool?),
-          redirectImmediate:
-              $checkedConvert('redirect_immediate', (v) => v as bool?),
+          accountSelection: $checkedConvert(
+            'account_selection',
+            (v) => v as bool?,
+          ),
+          redirectImmediate: $checkedConvert(
+            'redirect_immediate',
+            (v) => v as bool?,
+          ),
         );
         return val;
       },
@@ -31,27 +35,18 @@ RequisitionRequest _$RequisitionRequestFromJson(Map<String, dynamic> json) =>
         'agreementId': 'agreement',
         'userLanguage': 'user_language',
         'accountSelection': 'account_selection',
-        'redirectImmediate': 'redirect_immediate'
+        'redirectImmediate': 'redirect_immediate',
       },
     );
 
-Map<String, dynamic> _$RequisitionRequestToJson(RequisitionRequest instance) {
-  final val = <String, dynamic>{
-    'redirect': instance.redirectUrl,
-    'institution_id': instance.institutionId,
-  };
-
-  void writeNotNull(String key, dynamic value) {
-    if (value != null) {
-      val[key] = value;
-    }
-  }
-
-  writeNotNull('agreement', instance.agreementId);
-  writeNotNull('reference', instance.reference);
-  writeNotNull('user_language', instance.userLanguage);
-  writeNotNull('ssn', instance.ssn);
-  writeNotNull('account_selection', instance.accountSelection);
-  writeNotNull('redirect_immediate', instance.redirectImmediate);
-  return val;
-}
+Map<String, dynamic> _$RequisitionRequestToJson(RequisitionRequest instance) =>
+    <String, dynamic>{
+      'redirect': instance.redirectUrl,
+      'institution_id': instance.institutionId,
+      'agreement': ?instance.agreementId,
+      'reference': ?instance.reference,
+      'user_language': ?instance.userLanguage,
+      'ssn': ?instance.ssn,
+      'account_selection': ?instance.accountSelection,
+      'redirect_immediate': ?instance.redirectImmediate,
+    };

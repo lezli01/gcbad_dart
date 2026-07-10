@@ -6,8 +6,9 @@ import 'package:gcbad_dart/gcbad_dart.dart';
 
 /// Prints how many institutions each supported country has.
 Future<void> printNumPerCountry(GoCardlessBankAccountDataClient client) async {
-  for (var country in GoCardlessCountryCode.values
-      .where((country) => country != GoCardlessCountryCode.invalid)) {
+  for (var country in GoCardlessCountryCode.values.where(
+    (country) => country != GoCardlessCountryCode.invalid,
+  )) {
     var institutions = await client.getInstitutionMetadatas(country: country);
     print('${country.code}: ${institutions.length}');
   }
@@ -17,8 +18,9 @@ Future<void> printNumPerCountry(GoCardlessBankAccountDataClient client) async {
 Future<void> collectFeatures(GoCardlessBankAccountDataClient client) async {
   var features = HashSet<InstitutionFeature>();
 
-  for (var country in GoCardlessCountryCode.values
-      .where((country) => country != GoCardlessCountryCode.invalid)) {
+  for (var country in GoCardlessCountryCode.values.where(
+    (country) => country != GoCardlessCountryCode.invalid,
+  )) {
     var instMetas = await client.getInstitutionMetadatas(country: country);
 
     for (var instMeta in instMetas) {
@@ -34,8 +36,9 @@ Future<void> collectFeatures(GoCardlessBankAccountDataClient client) async {
 
 void main() async {
   var client = GoCardlessBankAccountDataClient(
-      secretId: Platform.environment['GCBAD_ID']!,
-      secretKey: Platform.environment['GCBAD_KEY']!);
+    secretId: Platform.environment['GCBAD_ID']!,
+    secretKey: Platform.environment['GCBAD_KEY']!,
+  );
 
   // Start the bank-linking flow against the GoCardless sandbox institution.
   var institution = await client.getSandboxInstitution();
@@ -57,9 +60,11 @@ void main() async {
     var balances = await client.getBalances(account);
     print('Balances:\n${encoder.convert(balances)}');
 
-    var transactions = await client.getTransactions(account,
-        dateFrom: DateTime.now().add(Duration(days: -30)),
-        dateTo: DateTime.now());
+    var transactions = await client.getTransactions(
+      account,
+      dateFrom: DateTime.now().add(Duration(days: -30)),
+      dateTo: DateTime.now(),
+    );
 
     var creditors = <String>{
       for (var t in transactions.transactions.booked) t.creditorName ?? '',
