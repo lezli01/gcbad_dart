@@ -18,6 +18,11 @@ jobs:
     name: Publish to pub.dev
     runs-on: ubuntu-latest
     timeout-minutes: 15
+    # Matches the "require GitHub Actions environment" option on pub.dev's
+    # automated-publishing admin page. Create an environment named `pub.dev`
+    # under Settings > Environments (optionally with required reviewers) to
+    # gate releases behind manual approval.
+    environment: pub.dev
     # Required for OIDC-based authentication to pub.dev.
     permissions:
       id-token: write
