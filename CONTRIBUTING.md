@@ -18,12 +18,13 @@ Prefix Dart commands with `fvm` so they run against the pinned SDK.
 
 ## Before opening a pull request
 
-Please make sure the following all pass:
+Run the same checks as CI and make sure they all pass:
 
 ```shell
-fvm dart format .        # formatting
-fvm dart analyze         # static analysis (must be clean)
-fvm dart test            # tests
+fvm dart format .                    # formatting
+fvm dart analyze --fatal-infos       # static analysis (must be clean)
+fvm dart test -x live                # every offline test
+fvm dart pub publish --dry-run       # packaging is valid
 ```
 
 ## Code generation
@@ -67,3 +68,19 @@ so a bare `fvm dart test` is safe to run.
 - Keep all HTTP responses flowing through `GoCardlessHttpUtils` so that errors
   consistently surface as `GoCardlessException`.
 - Anything intended for consumers must be exported from `lib/gcbad_dart.dart`.
+
+## Commit messages and releases
+
+Commit messages **and** pull request titles follow
+[Conventional Commits](https://www.conventionalcommits.org) — `type(scope): description`,
+for example `feat: add transaction pagination` or `fix(http): refresh token before expiry`.
+Common types are `feat`, `fix`, `docs`, `test`, `refactor`, `chore`, and `ci`. A
+CI check validates PR titles and commit subjects, so non-conforming titles are
+rejected.
+
+Releases are automated with
+[release-please](https://github.com/googleapis/release-please): merging
+Conventional Commits to `master` keeps a release pull request up to date that
+bumps the version in `pubspec.yaml`, updates `CHANGELOG.md`, and — once merged —
+tags the release and publishes to [pub.dev](https://pub.dev). You never bump the
+version or edit the changelog by hand.
