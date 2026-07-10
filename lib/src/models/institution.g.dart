@@ -46,7 +46,7 @@ Institution _$InstitutionFromJson(Map<String, dynamic> json) => $checkedCreate(
             )
             .toList(),
       ),
-      logo: $checkedConvert('logo', (v) => v as String),
+      logo: $checkedConvert('logo', (v) => v as String?),
     );
     return val;
   },
@@ -66,7 +66,7 @@ Map<String, dynamic> _$InstitutionToJson(Institution instance) =>
       'countries': instance.countries
           .map((e) => _$GoCardlessCountryCodeEnumMap[e]!)
           .toList(),
-      'logo': instance.logo,
+      'logo': ?instance.logo,
       'supported_features': instance.supportedFeatures
           .map((e) => _$InstitutionFeatureEnumMap[e]!)
           .toList(),
