@@ -1,7 +1,8 @@
 name: gcbad_dart
-description: GoCardless Bank Account Data client.
+description: A Dart client for the GoCardless Bank Account Data API — institutions, agreements, requisitions, and account data.
 version: 1.0.0
-# repository: https://github.com/lezli01/gcbad_dart
+repository: https://github.com/lezli01/gcbad_dart
+issue_tracker: https://github.com/lezli01/gcbad_dart/issues
 
 environment:
   sdk: ^3.1.0

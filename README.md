@@ -1,39 +1,90 @@
-<!-- 
-This README describes the package. If you publish this package to pub.dev,
-this README's contents appear on the landing page for your package.
+# gcbad_dart
 
-For information about how to write a good package README, see the guide for
-[writing package pages](https://dart.dev/guides/libraries/writing-package-pages). 
+A Dart client library for the [GoCardless Bank Account Data](https://bankaccountdata.gocardless.com) API (v2).
 
-For general information about developing packages, see the Dart guide for
-[creating packages](https://dart.dev/guides/libraries/create-library-packages)
-and the Flutter guide for
-[developing packages and plugins](https://flutter.dev/developing-packages). 
--->
-
-TODO: Put a short description of the package here that helps potential users
-know whether this package might be useful for them.
+It wraps the full flow of the API — token management, institution discovery, end-user agreements, requisitions (the bank-linking consent flow), and retrieval of account balances, details, and transactions — behind an ergonomic, strongly-typed interface.
 
 ## Features
 
-TODO: List what your package can do. Maybe include images, gifs, or videos.
+- Automatic access-token management (requests and refreshes tokens transparently).
+- Institution discovery, optionally filtered by country.
+- End-user agreement and requisition creation, with sensible defaults.
+- Polling helper (`waitForRequisitionLink`) for the consent flow.
+- Typed access to accounts, balances, account details, and transactions.
+- All API errors surface as a single `GoCardlessException`.
 
 ## Getting started
 
-TODO: List prerequisites and provide or point to information on how to
-start using the package.
+Add the package to your `pubspec.yaml`:
+
+```yaml
+dependencies:
+  gcbad_dart: ^1.0.0
+```
+
+You need GoCardless Bank Account Data API credentials (a secret ID and secret
+key), which you can create in the
+[GoCardless user portal](https://bankaccountdata.gocardless.com).
 
 ## Usage
 
-TODO: Include short and useful examples for package users. Add longer examples
-to `/example` folder. 
-
 ```dart
-const like = 'sample';
+import 'package:gcbad_dart/gcbad_dart.dart';
+
+Future<void> main() async {
+  final client = GoCardlessBankAccountDataClient(
+    secretId: 'your-secret-id',
+    secretKey: 'your-secret-key',
+  );
+
+  // Discover institutions (optionally by country).
+  final institutions = await client.getInstitutionMetadatas(
+      country: GoCardlessCountryCode.unitedKingdom);
+
+  // Create an agreement + requisition to start the bank-linking flow.
+  final institution = institutions.first;
+  final agreement = await client.createDefaultAgreement(institution);
+  final requisition = await client.createRequisition(agreement);
+
+  // Send the user to `requisition.link` to authenticate with their bank,
+  // then wait for the requisition to become linked.
+  print('Open this link to authenticate: ${requisition.link}');
+  final linked = await client.waitForRequisitionLink(requisition);
+
+  // Read account data.
+  final accounts = await client.getAccounts(linked);
+  for (final account in accounts) {
+    final balances = await client.getBalances(account);
+    final transactions = await client.getTransactions(account);
+    print('${account.ownerName}: '
+        '${balances.balances.length} balances, '
+        '${transactions.transactions.booked.length} booked transactions');
+  }
+}
 ```
 
-## Additional information
+The GoCardless sandbox institution (`SANDBOXFINANCE_SFIN0000`) is handy for
+testing; `client.getSandboxInstitution()` returns it directly.
 
-TODO: Tell users more about the package: where to find more information, how to 
-contribute to the package, how to file issues, what response they can expect 
-from the package authors, and more.
+See the [`example/`](example/) directory for more.
+
+## Error handling
+
+Every API error is thrown as a `GoCardlessException`, whose `message`
+summarizes the GoCardless error response:
+
+```dart
+try {
+  await client.getInstitutionById('does-not-exist');
+} on GoCardlessException catch (e) {
+  print(e.message);
+}
+```
+
+## Contributing
+
+Contributions are welcome — see [CONTRIBUTING.md](CONTRIBUTING.md).
+
+## License
+
+Released under the [MIT License](LICENSE).

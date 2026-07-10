@@ -1,0 +1,27 @@
+name: CI
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dart-lang/setup-dart@v1
+
+      - name: Install dependencies
+        run: dart pub get
+
+      - name: Verify formatting
+        run: dart format --output=none --set-exit-if-changed .
+
+      - name: Analyze
+        run: dart analyze --fatal-infos
+
+      # Only the offline unit tests run in CI. test/gcbad_dart_test.dart drives
+      # the live GoCardless sandbox and needs GCBAD_ID/GCBAD_KEY plus a browser.
+      - name: Run unit tests
+        run: dart test test/error_response_test.dart test/httputils_test.dart

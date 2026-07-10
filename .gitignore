@@ -8,3 +8,6 @@ pubspec.lock
 
 .idea
 .local-chrome
+
+# Local scratch data (e.g. saved requisition dumps) used while running examples
+*.data
