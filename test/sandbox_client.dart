@@ -17,14 +17,15 @@ class SandboxClient {
 
   SandboxClient._internal() {
     client = GoCardlessBankAccountDataClient(
-        secretId: Platform.environment["GCBAD_ID"]!,
-        secretKey: Platform.environment["GCBAD_KEY"]!);
+      secretId: Platform.environment["GCBAD_ID"]!,
+      secretKey: Platform.environment["GCBAD_KEY"]!,
+    );
 
     requisitionFuture = _createRequisition();
   }
 
   Future<(GoCardlessBankAccountDataClient, Requisition)>
-      waitForRequisition() async {
+  waitForRequisition() async {
     await requisitionFuture;
     return (client, requisition);
   }
@@ -32,15 +33,22 @@ class SandboxClient {
   Future _createRequisition() async {
     var institution = await client.getSandboxInstitution();
     var agreement = await client.createAgreement(
-        institution, int.parse(institution.transactionTotalDays!), 90, [
-      InformationToAccess.balances,
-      InformationToAccess.details,
-      InformationToAccess.transactions
-    ]);
+      institution,
+      int.parse(institution.transactionTotalDays!),
+      90,
+      [
+        InformationToAccess.balances,
+        InformationToAccess.details,
+        InformationToAccess.transactions,
+      ],
+    );
     requisition = await client.createRequisition(agreement);
 
-    var browser =
-        await puppeteer.launch(headless: true, timeout: Duration(minutes: 1));
+    var browser = await puppeteer.launch(
+      headless: true,
+      timeout: Duration(minutes: 1),
+      args: ['--no-sandbox'],
+    );
     var page = await browser.newPage();
     page.defaultTimeout = Duration.zero;
 
