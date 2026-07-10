@@ -1,0 +1,68 @@
+name: Integration tests
+
+# The live GoCardless sandbox suite (test/gcbad_dart_test.dart, tag: live).
+# It needs the GCBAD_ID/GCBAD_KEY repository secrets, network access, and a
+# headless browser (puppeteer), so it runs on a schedule and on demand rather
+# than on every push/PR — an external service should not sit on the
+# merge-blocking path.
+#
+# NOTE: `schedule` and `workflow_dispatch` only take effect once this file is
+# on the default branch (master). Until then the run button won't appear.
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "0 6 * * 1" # weekly, Mondays 06:00 UTC
+
+# Least privilege: only needs to read the repository contents.
+permissions:
+  contents: read
+
+# Serialize runs and never cancel one midway through the live consent flow.
+concurrency:
+  group: integration-tests
+  cancel-in-progress: false
+
+jobs:
+  live:
+    runs-on: ubuntu-latest
+    # Only the canonical repository holds the sandbox secrets; skip forks.
+    if: github.repository == 'lezli01/gcbad_dart'
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+
+      # Fail loudly instead of letting the suite silently skip and report a
+      # false green if the sandbox credentials are ever rotated away, unset, or
+      # empty. Runs before the SDK/Chromium setup so it fails fast.
+      - name: Verify sandbox credentials are present
+        env:
+          GCBAD_ID: ${{ secrets.GCBAD_ID }}
+          GCBAD_KEY: ${{ secrets.GCBAD_KEY }}
+        run: |
+          if [[ -z "$GCBAD_ID" || -z "$GCBAD_KEY" ]]; then
+            echo "::error::GCBAD_ID/GCBAD_KEY are missing or empty; the live suite would silently skip. Failing so the missing secret is visible."
+            exit 1
+          fi
+
+      - uses: dart-lang/setup-dart@v1
+        with:
+          sdk: stable
+
+      - name: Install dependencies
+        run: dart pub get
+
+      # puppeteer.launch() downloads its version-matched bundled Chromium to
+      # .dart_tool/puppeteer/local-chrome when PUPPETEER_EXECUTABLE_PATH is
+      # unset. Do it up front so a download problem surfaces as an isolated,
+      # obvious failure instead of an opaque test error. The ubuntu-latest
+      # image already ships Chrome's runtime shared libraries.
+      - name: Download Chromium for puppeteer
+        run: dart run puppeteer:download_chrome
+
+      # Secrets are scoped to just this step (least privilege) — the earlier
+      # steps, including the third-party puppeteer download, never see them.
+      - name: Run live integration tests
+        env:
+          GCBAD_ID: ${{ secrets.GCBAD_ID }}
+          GCBAD_KEY: ${{ secrets.GCBAD_KEY }}
+        run: dart test -t live --reporter github
