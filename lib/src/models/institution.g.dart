@@ -14,7 +14,13 @@ Institution _$InstitutionFromJson(Map<String, dynamic> json) => $checkedCreate(
       supportedFeatures: $checkedConvert(
         'supported_features',
         (v) => (v as List<dynamic>)
-            .map((e) => $enumDecode(_$InstitutionFeatureEnumMap, e))
+            .map(
+              (e) => $enumDecode(
+                _$InstitutionFeatureEnumMap,
+                e,
+                unknownValue: InstitutionFeature.unknown,
+              ),
+            )
             .toList(),
       ),
       identificationCodes: $checkedConvert(
@@ -31,7 +37,13 @@ Institution _$InstitutionFromJson(Map<String, dynamic> json) => $checkedCreate(
       countries: $checkedConvert(
         'countries',
         (v) => (v as List<dynamic>)
-            .map((e) => $enumDecode(_$GoCardlessCountryCodeEnumMap, e))
+            .map(
+              (e) => $enumDecode(
+                _$GoCardlessCountryCodeEnumMap,
+                e,
+                unknownValue: GoCardlessCountryCode.invalid,
+              ),
+            )
             .toList(),
       ),
       logo: $checkedConvert('logo', (v) => v as String),
@@ -73,6 +85,7 @@ const _$InstitutionFeatureEnumMap = {
   InstitutionFeature.corporateAccounts: 'corporate_accounts',
   InstitutionFeature.ssnVerification: 'ssn_verification',
   InstitutionFeature.accountSelection: 'account_selection',
+  InstitutionFeature.unknown: 'unknown',
 };
 
 const _$GoCardlessCountryCodeEnumMap = {

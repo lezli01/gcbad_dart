@@ -2,6 +2,9 @@ import 'package:json_annotation/json_annotation.dart';
 
 @JsonEnum(valueField: 'code')
 enum GoCardlessCountryCode {
+  /// Sentinel for the ISO 3166 user-assigned `XX` code, and the fallback that
+  /// unrecognized country codes deserialize to (see `unknownEnumValue` on
+  /// `InstitutionMetadata.countries`).
   invalid('XX'),
   austria('AT'),
   belgium('BE'),

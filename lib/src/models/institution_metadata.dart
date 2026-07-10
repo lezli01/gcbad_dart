@@ -13,7 +13,9 @@ class InstitutionMetadata {
   final String? bic;
   @JsonKey(name: 'transaction_total_days')
   final String? transactionTotalDays;
-  @JsonKey(name: 'countries')
+  // Map country codes GoCardless returns that this enum does not model (its
+  // coverage grows over time) to `invalid` instead of failing the whole parse.
+  @JsonKey(name: 'countries', unknownEnumValue: GoCardlessCountryCode.invalid)
   final List<GoCardlessCountryCode> countries;
   @JsonKey(name: 'logo')
   final String logo;

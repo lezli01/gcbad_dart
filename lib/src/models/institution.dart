@@ -7,7 +7,10 @@ part 'institution.g.dart';
 
 @JsonSerializable()
 class Institution extends InstitutionMetadata {
-  @JsonKey(name: 'supported_features')
+  @JsonKey(
+    name: 'supported_features',
+    unknownEnumValue: InstitutionFeature.unknown,
+  )
   final List<InstitutionFeature> supportedFeatures;
   @JsonKey(name: 'identification_codes')
   final List<String> identificationCodes;

@@ -146,6 +146,40 @@ void main() {
     });
   });
 
+  group('enum drift tolerance', () {
+    // GoCardless adds new feature and country codes over time. Deserialization
+    // must map unmodeled values to a fallback rather than throwing (which the
+    // HTTP layer would otherwise surface as an opaque GoCardlessException),
+    // breaking getInstitutionById/getInstitutionMetadatas for real data.
+    test('an unmodeled supported_features code decodes to unknown', () {
+      final institution = decode(
+        '{"id":"X","name":"X Bank","bic":null,"transaction_total_days":null,'
+        '"countries":["GB"],"logo":"logo",'
+        '"supported_features":["account_selection","reconfirmation_of_consent"],'
+        '"identification_codes":[]}',
+        Institution.fromJson,
+      );
+
+      expect(institution.supportedFeatures, [
+        InstitutionFeature.accountSelection,
+        InstitutionFeature.unknown,
+      ]);
+    });
+
+    test('an unmodeled country code decodes to invalid', () {
+      final metadata = decode(
+        '{"id":"X","name":"X Bank","bic":null,"transaction_total_days":null,'
+        '"countries":["GB","ZZ"],"logo":"logo"}',
+        InstitutionMetadata.fromJson,
+      );
+
+      expect(metadata.countries, [
+        GoCardlessCountryCode.unitedKingdom,
+        GoCardlessCountryCode.invalid,
+      ]);
+    });
+  });
+
   group('null omission (include_if_null: false)', () {
     test('Account drops null members but keeps required ones', () {
       final json = Account(

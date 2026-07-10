@@ -22,7 +22,13 @@ InstitutionMetadata _$InstitutionMetadataFromJson(Map<String, dynamic> json) =>
           countries: $checkedConvert(
             'countries',
             (v) => (v as List<dynamic>)
-                .map((e) => $enumDecode(_$GoCardlessCountryCodeEnumMap, e))
+                .map(
+                  (e) => $enumDecode(
+                    _$GoCardlessCountryCodeEnumMap,
+                    e,
+                    unknownValue: GoCardlessCountryCode.invalid,
+                  ),
+                )
                 .toList(),
           ),
           logo: $checkedConvert('logo', (v) => v as String),
