@@ -1,6 +1,11 @@
-/// Support for doing something awesome.
+/// A Dart client for the [GoCardless Bank Account Data][] API (v2).
 ///
-/// More dartdocs go here.
+/// Wraps the token flow, institution discovery, end-user agreements,
+/// requisitions (the bank-linking consent flow), and account data retrieval
+/// (balances, details, transactions). Start from
+/// [GoCardlessBankAccountDataClient].
+///
+/// [GoCardless Bank Account Data]: https://bankaccountdata.gocardless.com
 library;
 
 export 'src/gocardless_bank_account_data_client.dart';

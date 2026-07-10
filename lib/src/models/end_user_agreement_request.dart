@@ -15,16 +15,17 @@ class EndUserAgreementRequest {
   @JsonKey(name: 'access_scope')
   final List<InformationToAccess>? accessScope;
 
-  EndUserAgreementRequest(
-      {required this.institutionId,
-      required this.maxHistoricalDays,
-      required this.accessValidForDays,
-      required this.accessScope});
+  EndUserAgreementRequest({
+    required this.institutionId,
+    required this.maxHistoricalDays,
+    required this.accessValidForDays,
+    required this.accessScope,
+  });
 
   EndUserAgreementRequest.withDefaults({required this.institutionId})
-      : maxHistoricalDays = null,
-        accessValidForDays = null,
-        accessScope = null;
+    : maxHistoricalDays = null,
+      accessValidForDays = null,
+      accessScope = null;
 
   factory EndUserAgreementRequest.fromJson(Map<String, dynamic> json) =>
       _$EndUserAgreementRequestFromJson(json);

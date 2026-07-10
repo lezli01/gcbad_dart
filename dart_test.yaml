@@ -1,0 +1,8 @@
+# Test suite configuration.
+#
+# The `live` tag marks the GoCardless sandbox integration tests
+# (test/gcbad_dart_test.dart). They require GCBAD_ID/GCBAD_KEY credentials, a
+# network connection, and a headless browser (puppeteer), so CI excludes them
+# with `dart test -x live`; run them on their own with `dart test -t live`.
+tags:
+  live:

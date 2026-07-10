@@ -1,0 +1,12 @@
+# Files kept out of the published pub.dev package. The README references its
+# logo via an absolute raw.githubusercontent.com URL, so .github/ (assets and
+# all) is not needed inside the package archive.
+.github/
+.fvm/
+build/
+coverage/
+tool/
+
+CLAUDE.md
+release-please-config.json
+.release-please-manifest.json

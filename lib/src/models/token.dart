@@ -13,15 +13,16 @@ class Token {
   @JsonKey(name: 'refresh_expires')
   final int refreshExpiresSeconds;
 
-  get accessExpires => Duration(seconds: accessExpiresSeconds);
+  Duration get accessExpires => Duration(seconds: accessExpiresSeconds);
 
-  get refreshExpires => Duration(seconds: refreshExpiresSeconds);
+  Duration get refreshExpires => Duration(seconds: refreshExpiresSeconds);
 
-  Token(
-      {required this.accessToken,
-      required this.accessExpiresSeconds,
-      required this.refreshToken,
-      required this.refreshExpiresSeconds});
+  Token({
+    required this.accessToken,
+    required this.accessExpiresSeconds,
+    required this.refreshToken,
+    required this.refreshExpiresSeconds,
+  });
 
   factory Token.fromJson(Map<String, dynamic> json) => _$TokenFromJson(json);
 

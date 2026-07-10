@@ -22,13 +22,14 @@ class Balance {
   @JsonKey(name: 'lastCommittedTransaction')
   final String? lastCommittedTransaction;
 
-  Balance(
-      {required this.balanceAmount,
-      required this.balanceType,
-      required this.creditLimitIncluded,
-      required this.lastChangeDateTime,
-      required this.referenceDate,
-      required this.lastCommittedTransaction});
+  Balance({
+    required this.balanceAmount,
+    required this.balanceType,
+    required this.creditLimitIncluded,
+    required this.lastChangeDateTime,
+    required this.referenceDate,
+    required this.lastCommittedTransaction,
+  });
 
   factory Balance.fromJson(Map<String, dynamic> json) =>
       _$BalanceFromJson(json);

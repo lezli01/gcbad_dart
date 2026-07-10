@@ -18,7 +18,7 @@ enum RequisitionStatus {
   @JsonValue('LN')
   linked,
   @JsonValue('EX')
-  expired
+  expired,
 }
 
 @JsonSerializable()
@@ -50,20 +50,21 @@ class Requisition {
   @JsonKey(name: 'redirect_immediate')
   final bool? redirectImmediate;
 
-  Requisition(
-      {required this.id,
-      required this.created,
-      required this.redirect,
-      required this.status,
-      required this.institutionId,
-      required this.agreement,
-      required this.reference,
-      required this.accounts,
-      required this.userLanguage,
-      required this.link,
-      required this.ssn,
-      required this.accountSelection,
-      required this.redirectImmediate});
+  Requisition({
+    required this.id,
+    required this.created,
+    required this.redirect,
+    required this.status,
+    required this.institutionId,
+    required this.agreement,
+    required this.reference,
+    required this.accounts,
+    required this.userLanguage,
+    required this.link,
+    required this.ssn,
+    required this.accountSelection,
+    required this.redirectImmediate,
+  });
 
   factory Requisition.fromJson(Map<String, dynamic> json) =>
       _$RequisitionFromJson(json);

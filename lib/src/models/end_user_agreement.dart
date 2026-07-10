@@ -20,14 +20,15 @@ class EndUserAgreement {
   @JsonKey(name: 'accepted')
   final String? accepted;
 
-  EndUserAgreement(
-      {required this.id,
-      required this.created,
-      required this.institutionId,
-      required this.maxHistoricalDays,
-      required this.accessValidForDays,
-      required this.accessScope,
-      required this.accepted});
+  EndUserAgreement({
+    required this.id,
+    required this.created,
+    required this.institutionId,
+    required this.maxHistoricalDays,
+    required this.accessValidForDays,
+    required this.accessScope,
+    required this.accepted,
+  });
 
   factory EndUserAgreement.fromJson(Map<String, dynamic> json) =>
       _$EndUserAgreementFromJson(json);

@@ -21,25 +21,27 @@ class RequisitionRequest {
   @JsonKey(name: 'redirect_immediate')
   final bool? redirectImmediate;
 
-  RequisitionRequest(
-      {required this.redirectUrl,
-      required this.institutionId,
-      required this.agreementId,
-      required this.reference,
-      required this.userLanguage,
-      required this.ssn,
-      required this.accountSelection,
-      required this.redirectImmediate});
+  RequisitionRequest({
+    required this.redirectUrl,
+    required this.institutionId,
+    required this.agreementId,
+    required this.reference,
+    required this.userLanguage,
+    required this.ssn,
+    required this.accountSelection,
+    required this.redirectImmediate,
+  });
 
-  RequisitionRequest.withDefaults(
-      {required this.redirectUrl,
-      required this.institutionId,
-      this.agreementId,
-      this.reference,
-      this.userLanguage,
-      this.ssn,
-      this.accountSelection,
-      this.redirectImmediate});
+  RequisitionRequest.withDefaults({
+    required this.redirectUrl,
+    required this.institutionId,
+    this.agreementId,
+    this.reference,
+    this.userLanguage,
+    this.ssn,
+    this.accountSelection,
+    this.redirectImmediate,
+  });
 
   factory RequisitionRequest.fromJson(Map<String, dynamic> json) =>
       _$RequisitionRequestFromJson(json);

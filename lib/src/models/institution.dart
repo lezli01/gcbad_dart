@@ -7,20 +7,24 @@ part 'institution.g.dart';
 
 @JsonSerializable()
 class Institution extends InstitutionMetadata {
-  @JsonKey(name: 'supported_features')
+  @JsonKey(
+    name: 'supported_features',
+    unknownEnumValue: InstitutionFeature.unknown,
+  )
   final List<InstitutionFeature> supportedFeatures;
   @JsonKey(name: 'identification_codes')
   final List<String> identificationCodes;
 
-  Institution(
-      {required this.supportedFeatures,
-      required this.identificationCodes,
-      required super.id,
-      required super.name,
-      required super.bic,
-      required super.transactionTotalDays,
-      required super.countries,
-      required super.logo});
+  Institution({
+    required this.supportedFeatures,
+    required this.identificationCodes,
+    required super.id,
+    required super.name,
+    required super.bic,
+    required super.transactionTotalDays,
+    required super.countries,
+    required super.logo,
+  });
 
   factory Institution.fromJson(Map<String, dynamic> json) =>
       _$InstitutionFromJson(json);

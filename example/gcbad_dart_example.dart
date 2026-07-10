@@ -3,93 +3,76 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:gcbad_dart/gcbad_dart.dart';
-import 'package:gcbad_dart/src/gocardless_country_code.dart';
-import 'package:gcbad_dart/src/models/institution_feature.dart';
 
-Future printNumPerCountry(GoCardlessBankAccountDataClient client) async {
-  for (var country in GoCardlessCountryCode.values
-      .where((element) => element != GoCardlessCountryCode.invalid)) {
+/// Prints how many institutions each supported country has.
+Future<void> printNumPerCountry(GoCardlessBankAccountDataClient client) async {
+  for (var country in GoCardlessCountryCode.values.where(
+    (country) => country != GoCardlessCountryCode.invalid,
+  )) {
     var institutions = await client.getInstitutionMetadatas(country: country);
     print('${country.code}: ${institutions.length}');
   }
 }
 
-Future printAccountDetails(GoCardlessBankAccountDataClient client) async {
-  var institution = await client.getSandboxInstitution();
-  var agreement = await client.createDefaultAgreement(institution);
-  var requisition = await client.createRequisition(agreement);
-
-  print(requisition.link);
-  requisition = await client.waitForRequisitionLink(requisition);
-  var accounts = await client.getAccounts(requisition);
-
-  for (var account in accounts) {
-    print(account.ownerName);
-    print(JsonEncoder.withIndent('  ')
-        .convert(await client.getBalances(account)));
-  }
-}
-
-Future collectFeatures(GoCardlessBankAccountDataClient client) async {
+/// Collects the distinct set of features supported across all institutions.
+Future<void> collectFeatures(GoCardlessBankAccountDataClient client) async {
   var features = HashSet<InstitutionFeature>();
 
-  for (var country in GoCardlessCountryCode.values) {
-    if (country == GoCardlessCountryCode.invalid) {
-      continue;
-    }
-
+  for (var country in GoCardlessCountryCode.values.where(
+    (country) => country != GoCardlessCountryCode.invalid,
+  )) {
     var instMetas = await client.getInstitutionMetadatas(country: country);
 
     for (var instMeta in instMetas) {
-      sleep(Duration(milliseconds: 100));
+      await Future<void>.delayed(const Duration(milliseconds: 100));
 
       var inst = await client.getInstitutionByMetadata(instMeta);
       features.addAll(inst.supportedFeatures);
-
-      print('After $country -- ${inst.name}');
-      print('-------------------------------------------');
-      features.forEach(print);
     }
   }
+
+  features.forEach(print);
 }
 
 void main() async {
   var client = GoCardlessBankAccountDataClient(
-      secretId: Platform.environment['GCBAD_ID']!,
-      secretKey: Platform.environment['GCBAD_KEY']!);
+    secretId: Platform.environment['GCBAD_ID']!,
+    secretKey: Platform.environment['GCBAD_KEY']!,
+  );
 
-  // var inst = await client
-  //     .getInstitutionById('KH_OKHBHUHB');
-  // var agreement = await client.createDefaultAgreement(inst);
-  // var req = await client.createRequisition(agreement);
-  //
-  // print(req.link);
-  // req = await client.waitForRequisitionLink(req);
-  // print(json.encode(req));
+  // Start the bank-linking flow against the GoCardless sandbox institution.
+  var institution = await client.getSandboxInstitution();
+  var agreement = await client.createDefaultAgreement(institution);
+  var requisition = await client.createRequisition(agreement);
 
-  var f = File('example/.data');
-  var req = Requisition.fromJson(json.decode(await f.readAsString()));
+  // Open this link in a browser to authenticate with the (sandbox) bank, then
+  // wait for the requisition to reach the linked state.
+  print('Authenticate here: ${requisition.link}');
+  requisition = await client.waitForRequisitionLink(requisition);
 
-  var accounts = await client.getAccounts(req);
-
-  var allTrans = <Transaction>[];
+  // Read data for each linked account.
+  var accounts = await client.getAccounts(requisition);
+  var encoder = JsonEncoder.withIndent('  ');
 
   for (var account in accounts) {
-    var trans = await client.getTransactions(account,
-        dateFrom: DateTime.now().add(Duration(days: -30)),
-        dateTo: DateTime.now());
+    print('\nAccount: ${account.ownerName}');
 
-    allTrans += trans.transactions.booked;
-    allTrans += trans.transactions.pending;
+    var balances = await client.getBalances(account);
+    print('Balances:\n${encoder.convert(balances)}');
+
+    var transactions = await client.getTransactions(
+      account,
+      dateFrom: DateTime.now().add(Duration(days: -30)),
+      dateTo: DateTime.now(),
+    );
+
+    var creditors = <String>{
+      for (var t in transactions.transactions.booked) t.creditorName ?? '',
+      for (var t in transactions.transactions.pending) t.creditorName ?? '',
+    }..remove('');
+    print('Creditors seen in the last 30 days: ${creditors.join(', ')}');
   }
 
-  var s = HashSet<String>();
-  for (var trans in allTrans) {
-    s.add(trans.creditorName ?? '');
-  }
-
-  s.forEach(print);
-  //await collectFeatures(client);
-  // await printNumPerCountry(client);
-  // await printAccountDetails(client);
+  // Release the client's pooled HTTP connection when finished.
+  client.close();
 }

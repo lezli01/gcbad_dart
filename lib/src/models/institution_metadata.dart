@@ -13,18 +13,24 @@ class InstitutionMetadata {
   final String? bic;
   @JsonKey(name: 'transaction_total_days')
   final String? transactionTotalDays;
-  @JsonKey(name: 'countries')
+  // Map country codes GoCardless returns that this enum does not model (its
+  // coverage grows over time) to `invalid` instead of failing the whole parse.
+  @JsonKey(name: 'countries', unknownEnumValue: GoCardlessCountryCode.invalid)
   final List<GoCardlessCountryCode> countries;
+  // Nullable: a logo is not guaranteed for every institution, and a missing
+  // one must not fail the whole parse (getInstitutionMetadatas decodes every
+  // institution at once).
   @JsonKey(name: 'logo')
-  final String logo;
+  final String? logo;
 
-  InstitutionMetadata(
-      {required this.id,
-      required this.name,
-      required this.bic,
-      required this.transactionTotalDays,
-      required this.countries,
-      required this.logo});
+  InstitutionMetadata({
+    required this.id,
+    required this.name,
+    required this.bic,
+    required this.transactionTotalDays,
+    required this.countries,
+    required this.logo,
+  });
 
   factory InstitutionMetadata.fromJson(Map<String, dynamic> json) =>
       _$InstitutionMetadataFromJson(json);

@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:io';
 
 import 'package:gcbad_dart/src/gocardless_country_code.dart';
 import 'package:gcbad_dart/src/gocardless_http_client.dart';
@@ -15,24 +14,30 @@ import 'package:gcbad_dart/src/models/requisition.dart';
 import 'package:gcbad_dart/src/models/requisition_request.dart';
 import 'package:gcbad_dart/src/models/secretandkey.dart';
 import 'package:gcbad_dart/src/models/transactions.dart';
-import 'package:intl/intl.dart';
+import 'package:http/http.dart' as http;
 
 class GoCardlessBankAccountDataClient {
   static const String sandboxInstitutionId = 'SANDBOXFINANCE_SFIN0000';
   final GoCardlessHttpClient webClient;
 
-  GoCardlessBankAccountDataClient(
-      {required String secretId, required String secretKey})
-      : webClient = GoCardlessHttpClient(
-            SecretAndKey(secretId: secretId, secretKey: secretKey));
+  GoCardlessBankAccountDataClient({
+    required String secretId,
+    required String secretKey,
+    http.Client? httpClient,
+  }) : webClient = GoCardlessHttpClient(
+         SecretAndKey(secretId: secretId, secretKey: secretKey),
+         httpClient: httpClient,
+       );
 
-  Future<List<InstitutionMetadata>> getInstitutionMetadatas(
-      {GoCardlessCountryCode? country}) async {
+  Future<List<InstitutionMetadata>> getInstitutionMetadatas({
+    GoCardlessCountryCode? country,
+  }) async {
     return webClient.getInstitutionMetadatas(country);
   }
 
   Future<Institution> getInstitutionByMetadata(
-      InstitutionMetadata institutionMetadata) {
+    InstitutionMetadata institutionMetadata,
+  ) {
     return webClient.getInstitution(institutionMetadata.id);
   }
 
@@ -45,55 +50,66 @@ class GoCardlessBankAccountDataClient {
   }
 
   Future<EndUserAgreement> createAgreementById(
-      String institutionId,
-      int maxHistoricalDays,
-      int accessValidForDays,
-      List<InformationToAccess> accessScope) async {
+    String institutionId,
+    int maxHistoricalDays,
+    int accessValidForDays,
+    List<InformationToAccess> accessScope,
+  ) async {
     var request = EndUserAgreementRequest(
-        institutionId: institutionId,
-        maxHistoricalDays: maxHistoricalDays,
-        accessValidForDays: accessValidForDays,
-        accessScope: accessScope);
+      institutionId: institutionId,
+      maxHistoricalDays: maxHistoricalDays,
+      accessValidForDays: accessValidForDays,
+      accessScope: accessScope,
+    );
 
     return webClient.requestAgreement(jsonEncode(request));
   }
 
   Future<EndUserAgreement> createAgreement(
-      InstitutionMetadata institutionMetadata,
-      int maxHistoricalDays,
-      int accessValidForDays,
-      List<InformationToAccess> accessScope) async {
+    InstitutionMetadata institutionMetadata,
+    int maxHistoricalDays,
+    int accessValidForDays,
+    List<InformationToAccess> accessScope,
+  ) async {
     var request = EndUserAgreementRequest(
-        institutionId: institutionMetadata.id,
-        maxHistoricalDays: maxHistoricalDays,
-        accessValidForDays: accessValidForDays,
-        accessScope: accessScope);
+      institutionId: institutionMetadata.id,
+      maxHistoricalDays: maxHistoricalDays,
+      accessValidForDays: accessValidForDays,
+      accessScope: accessScope,
+    );
 
     return webClient.requestAgreement(jsonEncode(request));
   }
 
   Future<EndUserAgreement> createDefaultAgreementById(
-      String institutionId) async {
-    var request =
-        EndUserAgreementRequest.withDefaults(institutionId: institutionId);
+    String institutionId,
+  ) async {
+    var request = EndUserAgreementRequest.withDefaults(
+      institutionId: institutionId,
+    );
 
     return webClient.requestAgreement(jsonEncode(request));
   }
 
   Future<EndUserAgreement> createDefaultAgreement(
-      InstitutionMetadata institutionMetadata) async {
+    InstitutionMetadata institutionMetadata,
+  ) async {
     var request = EndUserAgreementRequest.withDefaults(
-        institutionId: institutionMetadata.id);
+      institutionId: institutionMetadata.id,
+    );
 
     return webClient.requestAgreement(jsonEncode(request));
   }
 
-  Future<Requisition> createRequisition(EndUserAgreement agreement,
-      {String? redirectUrl}) async {
+  Future<Requisition> createRequisition(
+    EndUserAgreement agreement, {
+    String? redirectUrl,
+  }) async {
     var request = RequisitionRequest.withDefaults(
-        redirectUrl: redirectUrl ?? "https://www.gocardless.com",
-        institutionId: agreement.institutionId,
-        agreementId: agreement.id);
+      redirectUrl: redirectUrl ?? "https://www.gocardless.com",
+      institutionId: agreement.institutionId,
+      agreementId: agreement.id,
+    );
 
     return webClient.requestRequisition(jsonEncode(request));
   }
@@ -106,7 +122,7 @@ class GoCardlessBankAccountDataClient {
     var requisition = await getRequisition(requisitionId);
 
     while (requisition.status != RequisitionStatus.linked) {
-      sleep(Duration(milliseconds: 100));
+      await Future<void>.delayed(const Duration(milliseconds: 100));
       requisition = await getRequisition(requisitionId);
     }
 
@@ -155,15 +171,24 @@ class GoCardlessBankAccountDataClient {
     return webClient.getAccountDetails(accountId);
   }
 
-  Future<Transactions> getTransactions(Account account,
-      {DateTime? dateFrom, DateTime? dateTo}) {
+  Future<Transactions> getTransactions(
+    Account account, {
+    DateTime? dateFrom,
+    DateTime? dateTo,
+  }) {
     return getTransactionsById(account.id, dateFrom: dateFrom, dateTo: dateTo);
   }
 
-  Future<Transactions> getTransactionsById(String accountId,
-      {DateTime? dateFrom, DateTime? dateTo}) {
+  Future<Transactions> getTransactionsById(
+    String accountId, {
+    DateTime? dateFrom,
+    DateTime? dateTo,
+  }) {
     return webClient.getTransactions(
-        accountId, dateToStringFormat(dateFrom), dateToStringFormat(dateTo));
+      accountId,
+      dateToStringFormat(dateFrom),
+      dateToStringFormat(dateTo),
+    );
   }
 
   String? dateToStringFormat(DateTime? dateTime) {
@@ -171,6 +196,14 @@ class GoCardlessBankAccountDataClient {
       return null;
     }
 
-    return DateFormat('yyyy-MM-dd').format(dateTime);
+    final year = dateTime.year.toString().padLeft(4, '0');
+    final month = dateTime.month.toString().padLeft(2, '0');
+    final day = dateTime.day.toString().padLeft(2, '0');
+
+    return '$year-$month-$day';
   }
+
+  /// Closes the underlying HTTP client and releases its connection pool. Call
+  /// this when the client is no longer needed.
+  void close() => webClient.close();
 }
