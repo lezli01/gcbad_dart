@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:io';
 
 import 'package:gcbad_dart/src/gocardless_country_code.dart';
 import 'package:gcbad_dart/src/gocardless_http_client.dart';
@@ -15,7 +14,7 @@ import 'package:gcbad_dart/src/models/requisition.dart';
 import 'package:gcbad_dart/src/models/requisition_request.dart';
 import 'package:gcbad_dart/src/models/secretandkey.dart';
 import 'package:gcbad_dart/src/models/transactions.dart';
-import 'package:intl/intl.dart';
+import 'package:http/http.dart' as http;
 
 class GoCardlessBankAccountDataClient {
   static const String sandboxInstitutionId = 'SANDBOXFINANCE_SFIN0000';
@@ -24,8 +23,10 @@ class GoCardlessBankAccountDataClient {
   GoCardlessBankAccountDataClient({
     required String secretId,
     required String secretKey,
+    http.Client? httpClient,
   }) : webClient = GoCardlessHttpClient(
          SecretAndKey(secretId: secretId, secretKey: secretKey),
+         httpClient: httpClient,
        );
 
   Future<List<InstitutionMetadata>> getInstitutionMetadatas({
@@ -121,7 +122,7 @@ class GoCardlessBankAccountDataClient {
     var requisition = await getRequisition(requisitionId);
 
     while (requisition.status != RequisitionStatus.linked) {
-      sleep(Duration(milliseconds: 100));
+      await Future<void>.delayed(const Duration(milliseconds: 100));
       requisition = await getRequisition(requisitionId);
     }
 
@@ -195,6 +196,14 @@ class GoCardlessBankAccountDataClient {
       return null;
     }
 
-    return DateFormat('yyyy-MM-dd').format(dateTime);
+    final year = dateTime.year.toString().padLeft(4, '0');
+    final month = dateTime.month.toString().padLeft(2, '0');
+    final day = dateTime.day.toString().padLeft(2, '0');
+
+    return '$year-$month-$day';
   }
+
+  /// Closes the underlying HTTP client and releases its connection pool. Call
+  /// this when the client is no longer needed.
+  void close() => webClient.close();
 }

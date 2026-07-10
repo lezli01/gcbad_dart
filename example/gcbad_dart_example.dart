@@ -24,7 +24,7 @@ Future<void> collectFeatures(GoCardlessBankAccountDataClient client) async {
     var instMetas = await client.getInstitutionMetadatas(country: country);
 
     for (var instMeta in instMetas) {
-      sleep(Duration(milliseconds: 100));
+      await Future<void>.delayed(const Duration(milliseconds: 100));
 
       var inst = await client.getInstitutionByMetadata(instMeta);
       features.addAll(inst.supportedFeatures);
@@ -72,4 +72,7 @@ void main() async {
     }..remove('');
     print('Creditors seen in the last 30 days: ${creditors.join(', ')}');
   }
+
+  // Release the client's pooled HTTP connection when finished.
+  client.close();
 }

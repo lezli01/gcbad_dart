@@ -11,7 +11,7 @@ class GoCardlessHttpUtils {
   ) {
     return _parse(
       utf8.decode(response.bodyBytes),
-      (body) => fromJson(jsonDecode(body)),
+      (body) => fromJson(jsonDecode(body) as Map<String, dynamic>),
     );
   }
 
@@ -21,7 +21,9 @@ class GoCardlessHttpUtils {
   ) {
     return _parse(
       utf8.decode(response.bodyBytes),
-      (body) => (jsonDecode(body) as List).map((e) => fromJson(e)).toList(),
+      (body) => (jsonDecode(body) as List<dynamic>)
+          .map((e) => fromJson(e as Map<String, dynamic>))
+          .toList(),
     );
   }
 
@@ -30,7 +32,9 @@ class GoCardlessHttpUtils {
       return fromJson(body);
     } catch (_) {
       try {
-        throw ErrorResponse.fromJson(jsonDecode(body)).exception;
+        throw ErrorResponse.fromJson(
+          jsonDecode(body) as Map<String, dynamic>,
+        ).exception;
       } on GoCardlessException catch (_) {
         rethrow;
       } catch (_) {

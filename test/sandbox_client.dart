@@ -10,7 +10,7 @@ class SandboxClient {
     return _instance;
   }
 
-  late Future requisitionFuture;
+  late Future<void> requisitionFuture;
   late GoCardlessBankAccountDataClient client;
   late Requisition requisition;
   bool ready = false;
@@ -30,7 +30,7 @@ class SandboxClient {
     return (client, requisition);
   }
 
-  Future _createRequisition() async {
+  Future<void> _createRequisition() async {
     var institution = await client.getSandboxInstitution();
     var agreement = await client.createAgreement(
       institution,
@@ -68,7 +68,7 @@ class SandboxClient {
     await page.click(".btn-primary");
 
     while (!(page.url ?? "").contains("consent/approve")) {
-      await Future.delayed(Duration(milliseconds: 200));
+      await Future<void>.delayed(Duration(milliseconds: 200));
     }
     await page.waitForSelector(".btn-primary");
     await page.click(".btn-primary");

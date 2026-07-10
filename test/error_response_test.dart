@@ -10,12 +10,13 @@ void main() {
     test('Test parsing', () {
       ErrorResponse.fromJson(
         jsonDecode(
-          '{'
-          '"summary": "",'
-          '"detail": "",'
-          '"status_code": 200'
-          '}',
-        ),
+              '{'
+              '"summary": "",'
+              '"detail": "",'
+              '"status_code": 200'
+              '}',
+            )
+            as Map<String, dynamic>,
       );
     });
   });

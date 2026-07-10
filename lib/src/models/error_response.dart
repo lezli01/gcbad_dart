@@ -39,11 +39,11 @@ class ErrorResponse {
       if (summary is List<dynamic> &&
           summary.isNotEmpty &&
           summary[0] is String) {
-        summaryText = summary[0];
+        summaryText = summary[0] as String;
       }
 
       if (detail is List<dynamic> && detail.isNotEmpty && detail[0] is String) {
-        detailText = detail[0];
+        detailText = detail[0] as String;
       }
 
       if (statusCode is int) {
