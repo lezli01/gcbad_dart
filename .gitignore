@@ -14,3 +14,7 @@ pubspec.lock
 
 # FVM Version Cache
 .fvm/
+
+# Node deps for the brand-asset generator (tool/). The rendered PNGs under
+# .github/assets are committed; their node_modules are not.
+tool/node_modules/
