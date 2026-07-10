@@ -1,0 +1,71 @@
+name: Publish to pub.dev
+
+# Triggered by the tag that release-please pushes (e.g. v1.0.1).
+# Publishing must run on a tag ref, because pub.dev's automated
+# publishing only accepts OIDC tokens whose refType is 'tag'.
+on:
+  push:
+    tags:
+      - 'v[0-9]+.[0-9]+.[0-9]+'
+      - 'v[0-9]+.[0-9]+.[0-9]+-*'
+  # Allow manual republishing of an existing tag. Must be dispatched
+  # against the tag ref itself (not a branch) so pub.dev's OIDC check
+  # sees refType=tag.
+  workflow_dispatch:
+
+jobs:
+  publish:
+    name: Publish to pub.dev
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    # Required for OIDC-based authentication to pub.dev.
+    permissions:
+      id-token: write
+      contents: read
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Verify tag ref
+        run: |
+          if [ "${{ github.ref_type }}" != "tag" ]; then
+            echo "Publishing must run from a tag ref, got '${{ github.ref }}'."
+            exit 1
+          fi
+
+      - name: Verify tag matches pubspec version
+        shell: bash
+        run: |
+          version="$(awk -F': ' '/^version:/ { print $2; exit }' pubspec.yaml | tr -d '"')"
+          expected_tag="v${version}"
+          if [ "${{ github.ref_name }}" != "${expected_tag}" ]; then
+            echo "Tag '${{ github.ref_name }}' does not match pubspec version '${version}'."
+            echo "Expected tag '${expected_tag}'."
+            exit 1
+          fi
+
+      # Provisions the pub.dev OIDC credentials used by `dart pub publish`.
+      - name: Set up Dart
+        uses: dart-lang/setup-dart@v1
+        with:
+          sdk: stable
+
+      - name: Install dependencies
+        run: dart pub get
+
+      - name: Verify formatting
+        run: dart format --output=none --set-exit-if-changed .
+
+      - name: Analyze
+        run: dart analyze --fatal-infos
+
+      # Run every offline test. The live sandbox suite (tag: live) needs
+      # GCBAD_ID/GCBAD_KEY plus a browser and is exercised separately.
+      - name: Run offline tests
+        run: dart test -x live
+
+      - name: Dry-run publish
+        run: dart pub publish --dry-run
+
+      - name: Publish to pub.dev
+        run: dart pub publish --force

@@ -1,0 +1,44 @@
+name: Release Please
+
+on:
+  push:
+    branches: [master]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+concurrency:
+  group: release-please-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  release-please:
+    name: Maintain release PR
+    runs-on: ubuntu-latest
+    steps:
+      - name: Run release-please
+        id: release
+        uses: googleapis/release-please-action@v5
+        with:
+          # Authenticate as a PAT, NOT the default GITHUB_TOKEN.
+          #
+          # GitHub never triggers `pull_request`, `pull_request_target`, or
+          # `push` workflows for events created with GITHUB_TOKEN (recursion
+          # guard). That left the release PR's required "Validate Conventional
+          # Commits" check (from pr-title.yml, a pull_request_target job)
+          # unreported and perpetually "Expected", blocking the merge forever.
+          #
+          # A PAT authors the release PR and the release tag as a real
+          # identity, so the PR checks (CI, Gitleaks, Conventional Commits)
+          # and the tag-triggered publish.yml (`on: push: tags`) all fire
+          # naturally — no manual `gh workflow run` dispatch needed.
+          #
+          # The PAT needs Contents: read/write and Pull requests: read/write
+          # on this repo (classic: `repo` scope).
+          token: ${{ secrets.RELEASE_PLEASE_PAT }}
+          # Uses release-please-config.json and .release-please-manifest.json
+          # from the repo root.
+          config-file: release-please-config.json
+          manifest-file: .release-please-manifest.json
